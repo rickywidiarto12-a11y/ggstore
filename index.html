@@ -16,8 +16,7 @@
       import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
       // ======================================================
-      // 🔥 GANTI KONFIGURASI INI DENGAN MILIK KAMU
-      // Ambil dari: Firebase Console → Project Settings → Your Apps
+      // 🔥 KONFIGURASI FIREBASE
       // ======================================================
       const firebaseConfig = {
         apiKey: "AIzaSyDBw-3cHKKISsCWZWU9jDQl6ysBEtLx2Js",
@@ -27,21 +26,20 @@
         messagingSenderId: "261039919883",
         appId: "1:261039919883:web:899fdb16894dd5ad30880e",
       };
-      // ======================================================
 
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
       const storage = getStorage(app);
 
-      // Enable offline persistence (opsional, tapi membantu koneksi flaky)
+      // Enable offline persistence
       try {
         await enableIndexedDbPersistence(db);
       } catch(e) {
-        // Ignore - persistence mungkin sudah aktif atau tidak didukung browser ini
+        // Ignore
       }
 
-      // Expose ke window supaya bisa diakses dari script biasa di bawah
-      window._firebase = { db, storage, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, ref, uploadString, getDownloadURL, deleteObject };
+      // Expose ke window
+      window._firebase = { db, storage, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, ref, uploadBytes, getDownloadURL, deleteObject };
       window._firebaseReady = true;
       document.dispatchEvent(new Event('firebaseReady'));
     </script>
@@ -1400,7 +1398,7 @@
         const ADMIN_NAME = "Admin";
         const ADMIN_PHONE = "085800302777";
 
-        // ============ DATA PRODUK DEFAULT (dipakai saat Firestore kosong) ============
+        // ============ DATA PRODUK DEFAULT ============
         const DEFAULT_PRODUCTS = [
             { id: 1, name: "iPhone 11", category: "iphone", description: "iPhone 11 dengan kamera dual 12MP, chip A13 Bionic, layar Liquid Retina 6.1 inch, Face ID, tahan air IP68", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4799000, "128GB": 3999000, "256GB": 4499000 }, "Beacukai": { "64GB": 5299000, "128GB": 4499000, "256GB": 4999000 } }, badge: "Second iBox", image: "https://images.unsplash.com/photo-1573148195900-7845dcb9b557?w=400&h=400&fit=crop&auto=format" },
             { id: 2, name: "iPhone 12", category: "iphone", description: "iPhone 12 dengan desain flat edge, 5G ready, chip A14 Bionic, kamera dual 12MP, layar Super Retina XDR 6.1 inch", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4299000, "128GB": 4499000, "256GB": 4999000 }, "Beacukai": { "64GB": 4799000, "128GB": 4999000, "256GB": 5499000 } }, badge: "Inter Allop", image: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400&h=400&fit=crop&auto=format" },
@@ -1418,7 +1416,7 @@
         let selectedProduct = null;
         let selectedSignal = null;
         let selectedStorage = null;
-        let editedFile = null; // Mengganti editedImage agar menyimpan File object, bukan Base64
+        let editedFile = null;
         let deleteProductId = null;
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1426,23 +1424,13 @@
             initNewPriceGrid();
             showLoadingProducts();
 
-            // Tunggu Firebase siap, lalu load produk dari Firestore
-            async function uploadImageToStorage(file, fileName) {
-                const { storage, ref, uploadBytes, getDownloadURL } = window._firebase;
-                const imgRef = ref(storage, `products/${Date.now()}_${fileName}`);
-                // Upload file mentah jauh lebih cepat daripada uploadString base64
-                await uploadBytes(imgRef, file);
-                return await getDownloadURL(imgRef);
-            }
-                // Tanpa orderBy agar tidak butuh composite index di Firestore
+            function initFirebase() {
+                const { db, collection, onSnapshot, query } = window._firebase;
                 const q = query(collection(db, 'products'));
-                // Real-time listener: produk otomatis update kalau ada perubahan
                 onSnapshot(q, (snapshot) => {
                     if (snapshot.empty) {
-                        // Firestore kosong → seed dengan data default
                         seedDefaultProducts();
                     } else {
-                        // Sort di client-side berdasarkan createdAt
                         products = snapshot.docs
                             .map(d => ({ firestoreId: d.id, ...d.data() }))
                             .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1450,18 +1438,9 @@
                     }
                 }, (err) => {
                     console.error('Firestore error:', err);
-                    let errMsg = '⚠️ Gagal konek ke database. Menggunakan data lokal.';
-                    if (err.code === 'permission-denied') {
-                        errMsg = '⚠️ Akses ditolak Firestore. Cek Firestore Rules di Firebase Console.';
-                    } else if (err.code === 'failed-precondition') {
-                        errMsg = '⚠️ Firestore butuh index. Cek Firebase Console.';
-                    } else if (err.code === 'unavailable') {
-                        errMsg = '⚠️ Firestore tidak tersedia. Cek koneksi internet.';
-                    }
-                    // Fallback ke localStorage jika Firestore gagal
                     products = JSON.parse(localStorage.getItem('gadgetProducts')) || DEFAULT_PRODUCTS;
                     renderProducts();
-                    showToast(errMsg, 'error');
+                    showToast('⚠️ Menggunakan data lokal', 'error');
                 });
             }
 
@@ -1504,8 +1483,6 @@
             });
         });
 
-        // ============ FIREBASE HELPERS ============
-
         function showLoadingProducts() {
             const grid = document.getElementById('productsGrid');
             if (!grid) return;
@@ -1521,7 +1498,6 @@
         }
 
         async function seedDefaultProducts() {
-            // Isi Firestore dengan data default saat pertama kali dipakai
             const { db, collection, addDoc } = window._firebase;
             try {
                 for (const p of DEFAULT_PRODUCTS) {
@@ -1551,23 +1527,21 @@
         async function deleteProductFromFirestore(firestoreId, imageUrl) {
             const { db, doc, deleteDoc, storage, ref, deleteObject } = window._firebase;
             await deleteDoc(doc(db, 'products', firestoreId));
-            // Hapus gambar dari Storage jika itu URL Firebase Storage
             if (imageUrl && imageUrl.includes('firebasestorage.googleapis.com')) {
                 try {
                     const imgRef = ref(storage, imageUrl);
                     await deleteObject(imgRef);
-                } catch(e) { /* gambar mungkin sudah terhapus */ }
+                } catch(e) { }
             }
         }
 
-        async function uploadImageToStorage(base64Data, fileName) {
-            const { storage, ref, uploadString, getDownloadURL } = window._firebase;
+        async function uploadImageToStorage(file, fileName) {
+            const { storage, ref, uploadBytes, getDownloadURL } = window._firebase;
             const imgRef = ref(storage, `products/${Date.now()}_${fileName}`);
-            await uploadString(imgRef, base64Data, 'data_url');
+            await uploadBytes(imgRef, file);
             return await getDownloadURL(imgRef);
         }
 
-        // Fungsi lama saveProducts dibiarkan sebagai fallback lokal
         function saveProducts() { 
             try { localStorage.setItem('gadgetProducts', JSON.stringify(products)); } 
             catch(e) { console.warn('Gagal menyimpan ke localStorage:', e); }
@@ -1611,7 +1585,7 @@
             document.getElementById('adminInfoBox').style.display = type === 'admin' ? 'block' : 'none';
         }
         
-                function handleLogin(e) {
+        function handleLogin(e) {
             e.preventDefault();
             const name = document.getElementById('loginName').value.trim();
             const rawPhone = document.getElementById('loginPhone').value.trim();
@@ -1621,13 +1595,12 @@
                 return; 
             }
             
-            // Normalisasi nomor HP: hapus spasi, strip (-), dan ubah +62 jadi 0
+            // Normalisasi nomor HP
             let cleanPhone = rawPhone.replace(/[\s\-]/g, ''); 
             if (cleanPhone.startsWith('62')) {
                 cleanPhone = '0' + cleanPhone.substring(2);
             }
 
-            // Cek Admin (case-insensitive untuk nama, cocokkan nomor yang sudah bersih)
             if (name.toLowerCase() === ADMIN_NAME.toLowerCase() && cleanPhone === ADMIN_PHONE) { 
                 currentUser = { name: name, phone: rawPhone, isAdmin: true }; 
             } else { 
@@ -1640,7 +1613,6 @@
             updateUIForLogin(); 
             closeLoginModal();
             
-            // Pesan sukses berbeda agar Anda tahu login admin berhasil
             if (currentUser.isAdmin) {
                 showLoginMsg('Selamat datang, Admin! Mode pengelola aktif.', 'success');
             } else {
@@ -1926,7 +1898,7 @@
         
         function closeEditModal() { 
             document.getElementById('editProductModal').classList.remove('active'); 
-            editedImage = null; 
+            editedFile = null; 
             document.body.style.overflow = ''; 
         }
 
@@ -1991,9 +1963,9 @@
 
         function previewEditImage(input) {
             if (input.files?.[0]) {
-                editedFile = input.files[0]; // Simpan object filenya
+                editedFile = input.files[0];
                 const preview = document.getElementById('editImagePreview');
-                preview.src = URL.createObjectURL(editedFile); // Instan
+                preview.src = URL.createObjectURL(editedFile);
                 preview.style.display = 'block';
                 preview.alt = 'Preview gambar produk';
             }
@@ -2119,8 +2091,8 @@
         function previewNewImage(input) {
             if (input.files?.[0]) {
                 const file = input.files[0];
-                 const preview = document.getElementById('newImagePreview');
-                preview.src = URL.createObjectURL(file); // Instan, tanpa load memori berat
+                const preview = document.getElementById('newImagePreview');
+                preview.src = URL.createObjectURL(file);
                 preview.style.display = 'block';
                 preview.alt = 'Preview gambar produk baru';
             }
@@ -2129,74 +2101,66 @@
         async function addNewProduct(e) {
             e.preventDefault();
             if (!currentUser?.isAdmin) return;
-    
+            
             const imageInput = document.getElementById('newProductImage');
             const file = imageInput?.files?.[0];
             if (!file) { 
                 document.getElementById('addMessage').innerHTML = '<div class="error-msg">📷 Foto produk wajib diupload!</div>'; 
                 return; 
             }
-    
+            
             const signals = (document.getElementById('newProductSignal').value || '').split(',').map(s => s.trim()).filter(s => s);
             const storages = (document.getElementById('newProductStorage').value || '').split(',').map(s => s.trim()).filter(s => s);
-    
+            
             if (!signals.length || !storages.length) { 
-            document.getElementById('addMessage').innerHTML = '<div class="error-msg">⚠️ Varian sinyal dan storage harus diisi!</div>'; 
-            return; 
+                document.getElementById('addMessage').innerHTML = '<div class="error-msg">⚠️ Varian sinyal dan storage harus diisi!</div>'; 
+                return; 
             }
 
             const btn = e.target.querySelector('[type=submit]');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah & Menyimpan...';
-    
+            
             try {
                 let imageUrl = '';
                 const productName = document.getElementById('newProductName').value;
 
-            if (window._firebaseReady) {
-                // Upload file mentah langsung (SANGAT CEPAT)
-                imageUrl = await uploadImageToStorage(file, productName.replace(/\s/g,'_') + '.jpg');
-            } else {
-                imageUrl = URL.createObjectURL(file); // Fallback lokal
-            }
+                if (window._firebaseReady) {
+                    imageUrl = await uploadImageToStorage(file, productName.replace(/\s/g,'_') + '.jpg');
+                } else {
+                    imageUrl = URL.createObjectURL(file);
+                }
 
-            const newP = { 
-                id: Date.now(),
-                name: productName, 
-                category: document.getElementById('newProductCategory').value, 
-                description: document.getElementById('newProductDesc').value, 
-                badge: document.getElementById('newProductBadge').value, 
-                signalVariants: signals, 
-                storageVariants: storages, 
-                prices: getPricesFromGrid('new', signals, storages), 
-                image: imageUrl
-            };
-        
-            if (window._firebaseReady) {
-                await saveProductToFirestore(newP);
-                showToast('✅ Produk berhasil ditambahkan!');
-            } else {
-                products.push(newP);
-                saveProducts();
-                renderProducts();
-                showToast('✅ Produk ditambahkan (lokal).');
-            }
+                const newP = { 
+                    id: Date.now(),
+                    name: productName, 
+                    category: document.getElementById('newProductCategory').value, 
+                    description: document.getElementById('newProductDesc').value, 
+                    badge: document.getElementById('newProductBadge').value, 
+                    signalVariants: signals, 
+                    storageVariants: storages, 
+                    prices: getPricesFromGrid('new', signals, storages), 
+                    image: imageUrl
+                };
+                
+                if (window._firebaseReady) {
+                    await saveProductToFirestore(newP);
+                    showToast('✅ Produk berhasil ditambahkan!');
+                } else {
+                    products.push(newP);
+                    saveProducts();
+                    renderProducts();
+                    showToast('✅ Produk ditambahkan (lokal).');
+                }
 
-            closeAddProductModal();
-        } catch(err) {
-            console.error(err);
-            document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal simpan: ' + err.message + '</div>';
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-plus"></i> Tambah Produk';
-        }
-    };
-            reader.onerror = function() {
-                document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal membaca file gambar. Coba lagi.</div>';
+                closeAddProductModal();
+            } catch(err) {
+                console.error(err);
+                document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal simpan: ' + err.message + '</div>';
+            } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-plus"></i> Tambah Produk';
-            };
-            reader.readAsDataURL(imageInput.files[0]);
+            }
         }
 
         function confirmDelete(id) {
