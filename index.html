@@ -1606,24 +1606,41 @@
             document.getElementById('adminInfoBox').style.display = type === 'admin' ? 'block' : 'none';
         }
         
-        function handleLogin(e) {
+                function handleLogin(e) {
             e.preventDefault();
             const name = document.getElementById('loginName').value.trim();
-            const phone = document.getElementById('loginPhone').value.trim();
+            const rawPhone = document.getElementById('loginPhone').value.trim();
             
-            if (!name || !phone) { showLoginMsg('Nama dan nomor WhatsApp harus diisi!', 'error'); return; }
+            if (!name || !rawPhone) { 
+                showLoginMsg('Nama dan nomor WhatsApp harus diisi!', 'error'); 
+                return; 
+            }
             
-            if (name.toLowerCase() === ADMIN_NAME.toLowerCase() && phone === ADMIN_PHONE) { 
-                currentUser = { name: name, phone: phone, isAdmin: true }; 
+            // Normalisasi nomor HP: hapus spasi, strip (-), dan ubah +62 jadi 0
+            let cleanPhone = rawPhone.replace(/[\s\-]/g, ''); 
+            if (cleanPhone.startsWith('62')) {
+                cleanPhone = '0' + cleanPhone.substring(2);
+            }
+
+            // Cek Admin (case-insensitive untuk nama, cocokkan nomor yang sudah bersih)
+            if (name.toLowerCase() === ADMIN_NAME.toLowerCase() && cleanPhone === ADMIN_PHONE) { 
+                currentUser = { name: name, phone: rawPhone, isAdmin: true }; 
             } else { 
-                currentUser = { name: name, phone: phone, isAdmin: false }; 
+                currentUser = { name: name, phone: rawPhone, isAdmin: false }; 
             }
             
             try { localStorage.setItem('currentUser', JSON.stringify(currentUser)); } 
             catch(e) { console.warn('Gagal menyimpan login:', e); }
             
-            updateUIForLogin(); closeLoginModal();
-            showLoginMsg('Selamat datang, ' + name + '!', 'success');
+            updateUIForLogin(); 
+            closeLoginModal();
+            
+            // Pesan sukses berbeda agar Anda tahu login admin berhasil
+            if (currentUser.isAdmin) {
+                showLoginMsg('Selamat datang, Admin! Mode pengelola aktif.', 'success');
+            } else {
+                showLoginMsg('Selamat datang, ' + name + '!', 'success');
+            }
         }
         
         function logout() { 
