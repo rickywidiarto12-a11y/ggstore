@@ -2,24 +2,20 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Gadget Ganteng Store - Jual Beli iPhone & iPad Berkualitas di Salatiga">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="format-detection" content="telephone=no">
     <title>Gadget Ganteng Store - Jual iPhone & iPad Berkualitas</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <!-- ===== FIREBASE SDK ===== -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-      import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-      import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+      import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyDBw-3cHKKISsCWZWU9jDQl6ysBEtLx2Js",
         authDomain: "ggstore-5011e.firebaseapp.com",
         projectId: "ggstore-5011e",
-        storageBucket: "ggstore-5011e.firebasestorage.app",
+        storageBucket: "ggstore-5011e.appspot.com",
         messagingSenderId: "261039919883",
         appId: "1:261039919883:web:899fdb16894dd5ad30880e",
       };
@@ -30,49 +26,37 @@
 
       try {
         await enableIndexedDbPersistence(db);
-      } catch(e) {
-        // Ignore
-      }
+      } catch(e) { }
 
-      window._firebase = { db, storage, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, ref, uploadBytes, getDownloadURL, deleteObject };
+      window._firebase = { db, storage, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, ref, uploadBytes, getDownloadURL };
       window._firebaseReady = true;
       document.dispatchEvent(new Event('firebaseReady'));
     </script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
-        *:focus { outline: 2px solid var(--primary-yellow); outline-offset: 2px; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --primary-yellow: #FFD700;
             --dark-yellow: #FFC700;
             --light-yellow: #FFF9E6;
             --black: #1a1a1a;
-            --dark-gray: #2d2d2d;
             --white: #ffffff;
             --danger: #dc3545;
             --success: #28a745;
             --radius: 16px;
             --shadow: 0 8px 25px rgba(0,0,0,0.1);
-            --shadow-hover: 0 15px 40px rgba(0,0,0,0.15);
             --transition: all 0.3s ease;
-            --min-touch-target: 44px;
         }
-
-        html { scroll-behavior: smooth; font-size: clamp(14px, 2.5vw, 16px); -webkit-text-size-adjust: 100%; }
-
+        html { scroll-behavior: smooth; font-size: 16px; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, var(--light-yellow) 0%, #fff 100%);
             color: var(--black);
             overflow-x: hidden;
             line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-
         header {
             background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--dark-yellow) 100%);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -81,158 +65,104 @@
             z-index: 1000;
             width: 100%;
         }
-
         nav {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 0.5rem;
-            width: 100%;
         }
-
         .brand-name {
-            font-size: clamp(1rem, 4vw, 1.8rem);
+            font-size: 1.5rem;
             font-weight: 800;
             color: var(--black);
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            white-space: nowrap;
-            min-height: var(--min-touch-target);
-            display: flex;
-            align-items: center;
         }
-
         .nav-links {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.5rem;
             list-style: none;
             align-items: center;
             flex-wrap: wrap;
-            margin: 0;
-            padding: 0;
         }
-
         .nav-links a, .nav-links button {
             text-decoration: none;
             color: var(--black);
             font-weight: 600;
             transition: var(--transition);
-            padding: 0.5rem 0.8rem;
+            padding: 0.5rem 1rem;
             border-radius: 8px;
             background: none;
             border: none;
             cursor: pointer;
-            font-size: clamp(0.8rem, 2.2vw, 0.95rem);
-            white-space: nowrap;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 0.95rem;
         }
-
         .nav-links a:hover, .nav-links button:hover {
             background: rgba(0,0,0,0.1);
             transform: translateY(-2px);
         }
-
         .login-btn { background: var(--black) !important; color: var(--primary-yellow) !important; }
         .add-product-btn { background: var(--success) !important; color: white !important; }
-
         .user-info {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             color: var(--black);
             font-weight: 600;
-            font-size: clamp(0.8rem, 2vw, 0.9rem);
-            flex-wrap: wrap;
-            min-height: var(--min-touch-target);
         }
-
         .logout-btn {
             background: var(--danger) !important;
             color: white !important;
-            padding: 0.4rem 0.8rem !important;
+            padding: 0.5rem 1rem !important;
             border-radius: 8px;
             border: none;
             cursor: pointer;
             font-weight: 600;
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
         }
-
         .admin-badge {
             background: var(--danger);
             color: white;
-            padding: 0.15rem 0.5rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 20px;
-            font-size: clamp(0.6rem, 1.8vw, 0.7rem);
+            font-size: 0.7rem;
             font-weight: 700;
-            display: inline-block;
             margin-left: 0.3rem;
         }
-
         .hero {
             background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--dark-yellow) 100%);
-            padding: clamp(2rem, 8vw, 5rem) clamp(1rem, 4vw, 3rem);
+            padding: 4rem 2rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
             width: 100%;
         }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            right: -10%;
-            width: min(500px, 60vw);
-            height: min(500px, 60vw);
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
         .hero h1 {
-            font-size: clamp(1.4rem, 5.5vw, 3rem);
+            font-size: 2.5rem;
             margin-bottom: 1rem;
             color: var(--black);
             text-transform: uppercase;
-            animation: fadeInDown 1s ease;
-            line-height: 1.2;
-            word-wrap: break-word;
         }
-
         .hero p {
-            font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+            font-size: 1.1rem;
             margin-bottom: 2rem;
-            color: var(--dark-gray);
-            animation: fadeInUp 1s ease;
+            color: var(--black);
             max-width: 650px;
             margin-left: auto;
             margin-right: auto;
-            word-wrap: break-word;
         }
-
         .cta-buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
             flex-wrap: wrap;
-            animation: fadeInUp 1s ease 0.3s both;
         }
-
         .btn {
-            padding: clamp(0.75rem, 2.2vw, 1.1rem) clamp(1.3rem, 3.5vw, 2.2rem);
+            padding: 0.9rem 2rem;
             border: none;
             border-radius: 50px;
-            font-size: clamp(0.9rem, 2.3vw, 1.05rem);
+            font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
@@ -241,56 +171,34 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            white-space: nowrap;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
         }
-
         .btn-primary { background: var(--black); color: var(--primary-yellow); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
         .btn-secondary { background: var(--white); color: var(--black); border: 2px solid var(--black); }
-        .btn-secondary:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+        .btn-secondary:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #c82333; }
-
         .products-section {
             max-width: 1400px;
             margin: 0 auto;
-            padding: clamp(2rem, 5.5vw, 4.5rem) clamp(1rem, 3.5vw, 2.5rem);
+            padding: 3rem 2rem;
             width: 100%;
             flex: 1;
         }
-
         .section-title {
             text-align: center;
-            font-size: clamp(1.4rem, 4.5vw, 2.3rem);
+            font-size: 2rem;
             margin-bottom: 2rem;
             color: var(--black);
-            position: relative;
-            padding-bottom: 0.5rem;
         }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(90deg, var(--primary-yellow), var(--dark-yellow));
-            margin: 0.8rem auto 0;
-            border-radius: 2px;
-        }
-
         .category-tabs {
             display: flex;
-            gap: 0.6rem;
+            gap: 0.8rem;
             justify-content: center;
             margin-bottom: 2rem;
             flex-wrap: wrap;
-            padding: 0 0.5rem;
         }
-
         .tab-btn {
-            padding: clamp(0.55rem, 1.8vw, 0.9rem) clamp(1rem, 2.8vw, 2rem);
+            padding: 0.7rem 1.5rem;
             border: 3px solid var(--primary-yellow);
             background: var(--white);
             color: var(--black);
@@ -298,63 +206,43 @@
             font-weight: 700;
             cursor: pointer;
             transition: var(--transition);
-            font-size: clamp(0.8rem, 2.2vw, 1rem);
-            white-space: nowrap;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
+            font-size: 0.95rem;
         }
-
         .tab-btn.active, .tab-btn:hover {
             background: var(--primary-yellow);
-            box-shadow: 0 5px 15px rgba(255,215,0,0.4);
             transform: translateY(-2px);
         }
-
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
-            gap: clamp(1rem, 3.5vw, 2.2rem);
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
             width: 100%;
         }
-
         .product-card {
             background: var(--white);
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
-            position: relative;
-            border: 2px solid transparent;
             cursor: pointer;
             display: flex;
             flex-direction: column;
-            height: 100%;
         }
-
         .product-card:hover {
             transform: translateY(-8px);
-            box-shadow: var(--shadow-hover);
-            border-color: var(--primary-yellow);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
         }
-
         .product-image-container {
             position: relative;
-            height: clamp(180px, 28vw, 260px);
+            height: 260px;
             overflow: hidden;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
-            flex-shrink: 0;
+            background: #f5f5f5;
         }
-
         .product-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.4s ease;
-            display: block;
         }
-
-        .product-card:hover .product-image { transform: scale(1.06); }
-
         .product-badge {
             position: absolute;
             top: 0.8rem;
@@ -364,11 +252,8 @@
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-weight: 700;
-            font-size: clamp(0.65rem, 1.8vw, 0.85rem);
-            z-index: 10;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            font-size: 0.8rem;
         }
-
         .product-actions {
             position: absolute;
             top: 0.8rem;
@@ -376,9 +261,7 @@
             display: flex;
             flex-direction: column;
             gap: 0.4rem;
-            z-index: 10;
         }
-
         .action-btn {
             width: 36px;
             height: 36px;
@@ -388,48 +271,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
             font-size: 0.85rem;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
         }
-
         .edit-btn { background: rgba(0,0,0,0.75); color: white; display: none; }
         .edit-btn.visible { display: flex; }
-        .edit-btn:hover { background: var(--primary-yellow); color: var(--black); }
         .delete-btn { background: rgba(220,53,69,0.95); color: white; display: none; }
         .delete-btn.visible { display: flex; }
-        .delete-btn:hover { background: var(--danger); }
-
-        .product-info { 
-            padding: clamp(0.9rem, 2.3vw, 1.3rem); 
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
+        .product-info { padding: 1.2rem; flex: 1; display: flex; flex-direction: column; }
         .product-title {
-            font-size: clamp(1rem, 2.7vw, 1.2rem);
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.4rem;
             color: var(--black);
-            line-height: 1.3;
         }
-        
         .product-price-preview {
-            font-size: clamp(1.05rem, 2.8vw, 1.25rem);
+            font-size: 1.2rem;
             font-weight: 800;
             color: var(--primary-yellow);
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
         }
-        
-        .click-hint { 
-            color: #888; 
-            font-size: clamp(0.7rem, 1.9vw, 0.8rem); 
-            margin-top: auto;
-            padding-top: 0.3rem;
-        }
-
+        .click-hint { color: #888; font-size: 0.8rem; margin-top: auto; }
         .modal {
             display: none;
             position: fixed;
@@ -439,244 +300,120 @@
             z-index: 2000;
             align-items: center;
             justify-content: center;
-            padding: clamp(0.5rem, 2.5vw, 1.2rem);
+            padding: 1rem;
             overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
         }
-
         .modal.active { display: flex; }
-
         .modal-content {
             background: var(--white);
-            padding: clamp(1.2rem, 3.5vw, 1.8rem);
+            padding: 1.5rem;
             border-radius: var(--radius);
-            max-width: 950px;
+            max-width: 850px;
             width: 100%;
             max-height: 92vh;
             overflow-y: auto;
-            animation: modalSlideIn 0.35s ease;
-            scrollbar-width: thin;
             position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-
-        .modal-content::-webkit-scrollbar { width: 6px; }
-        .modal-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .modal-content::-webkit-scrollbar-thumb { background: var(--primary-yellow); border-radius: 10px; }
-
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.2rem;
-            padding-bottom: 0.9rem;
+            padding-bottom: 0.8rem;
             border-bottom: 2px solid var(--primary-yellow);
-            gap: 0.6rem;
-            flex-wrap: wrap;
         }
-
-        .modal-header h2 {
-            color: var(--black);
-            font-size: clamp(1.25rem, 4vw, 1.6rem);
-            flex-shrink: 0;
-            line-height: 1.3;
-        }
-
+        .modal-header h2 { color: var(--black); font-size: 1.4rem; }
         .close-modal {
             background: none;
             border: none;
-            font-size: clamp(1.6rem, 4.5vw, 2rem);
+            font-size: 1.8rem;
             cursor: pointer;
             color: #888;
             width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            flex-shrink: 0;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
-            transition: var(--transition);
         }
-
-        .close-modal:hover { color: var(--black); background: var(--light-yellow); transform: rotate(90deg); }
-
+        .close-modal:hover { color: var(--black); }
         .product-detail-grid {
             display: grid;
-            grid-template-columns: 1fr 1.1fr;
-            gap: clamp(1.2rem, 3.5vw, 2rem);
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
         }
-
         .product-detail-image {
             width: 100%;
             border-radius: 14px;
             overflow: hidden;
-            background: linear-gradient(135deg, #f8f8f8 0%, #eee 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #f8f8f8;
         }
-
-        .product-detail-image img { 
-            width: 100%; 
-            height: auto; 
-            display: block; 
-            max-height: 400px;
-            object-fit: contain;
-        }
-
-        .product-detail-info h3 {
-            font-size: clamp(1.15rem, 3.5vw, 1.4rem);
-            margin-bottom: 0.6rem;
-            line-height: 1.3;
-        }
-
+        .product-detail-image img { width: 100%; height: auto; display: block; }
         .product-detail-price {
-            font-size: clamp(1.4rem, 4.5vw, 2rem);
+            font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary-yellow);
             margin-bottom: 1rem;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
-
-        .product-detail-description {
-            margin-bottom: 1.2rem;
-            line-height: 1.7;
-            color: #444;
-            font-size: clamp(0.9rem, 2.3vw, 1rem);
-        }
-
-        .variant-section { margin-bottom: 1.1rem; }
-
-        .variant-label {
-            font-weight: 700;
-            margin-bottom: 0.4rem;
-            display: block;
-            font-size: clamp(0.9rem, 2.3vw, 1rem);
-        }
-
+        .variant-section { margin-bottom: 1rem; }
+        .variant-label { font-weight: 700; margin-bottom: 0.4rem; display: block; }
         .variant-options { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-
         .variant-btn {
-            padding: clamp(0.45rem, 1.4vw, 0.6rem) clamp(0.8rem, 2.3vw, 1.2rem);
+            padding: 0.5rem 1rem;
             border: 2px solid var(--primary-yellow);
             background: var(--white);
             border-radius: 10px;
             cursor: pointer;
-            transition: var(--transition);
             font-weight: 600;
-            font-size: clamp(0.8rem, 2.1vw, 0.95rem);
-            white-space: nowrap;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
         }
-
-        .variant-btn:hover, .variant-btn.active { 
-            background: var(--primary-yellow); 
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255,215,0,0.3);
-        }
-
-        .order-section {
-            margin-top: 1.4rem;
-            padding-top: 1rem;
-            border-top: 2px solid #eee;
-        }
-
-        .form-group { margin-bottom: 1.1rem; }
-
+        .variant-btn.active { background: var(--primary-yellow); }
+        .form-group { margin-bottom: 1rem; }
         .form-group label {
             display: block;
             margin-bottom: 0.4rem;
             font-weight: 600;
-            font-size: clamp(0.9rem, 2.3vw, 1rem);
         }
-
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: clamp(0.65rem, 1.8vw, 0.85rem);
+            padding: 0.8rem;
             border: 2px solid #ddd;
             border-radius: 12px;
-            font-size: clamp(0.95rem, 2.4vw, 1.05rem);
-            transition: var(--transition);
-            -webkit-appearance: none;
-            background: var(--white);
-            min-height: var(--min-touch-target);
+            font-size: 0.95rem;
         }
-
         .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
             outline: none;
             border-color: var(--primary-yellow);
-            box-shadow: 0 0 0 3px rgba(255,215,0,0.2);
         }
-
         .form-group textarea { resize: vertical; min-height: 80px; }
-
         .image-upload {
             border: 2px dashed var(--primary-yellow);
-            padding: clamp(1.2rem, 3.5vw, 1.8rem);
+            padding: 1.5rem;
             text-align: center;
             border-radius: 12px;
             cursor: pointer;
-            transition: var(--transition);
             background: var(--light-yellow);
-            min-height: var(--min-touch-target);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
         }
-
-        .image-upload:hover { background: #fff3cc; transform: translateY(-2px); }
-
+        .image-upload:hover { background: #fff3cc; }
         .login-container { max-width: 500px; margin: 0 auto; }
-
-        .login-tabs {
-            display: flex;
-            gap: 0.7rem;
-            margin-bottom: 1.4rem;
-            flex-wrap: wrap;
-        }
-
+        .login-tabs { display: flex; gap: 0.8rem; margin-bottom: 1.2rem; }
         .login-tab {
             flex: 1;
-            min-width: 120px;
-            padding: clamp(0.75rem, 2.2vw, 1rem);
+            padding: 0.8rem;
             border: 2px solid #ddd;
             background: var(--white);
             border-radius: 12px;
             cursor: pointer;
             font-weight: 700;
-            transition: var(--transition);
             text-align: center;
-            font-size: clamp(0.9rem, 2.4vw, 1.05rem);
-            min-height: var(--min-touch-target);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.4rem;
         }
-
         .login-tab.active {
             border-color: var(--primary-yellow);
             background: var(--primary-yellow);
-            color: var(--black);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255,215,0,0.3);
         }
-
         .login-info-box {
             margin-top: 1rem;
             padding: 0.8rem;
             background: var(--light-yellow);
             border-radius: 12px;
-            font-size: clamp(0.8rem, 2.1vw, 0.9rem);
-            line-height: 1.5;
+            font-size: 0.9rem;
             border-left: 4px solid var(--primary-yellow);
         }
-
         .price-grid {
             display: flex;
             flex-direction: column;
@@ -685,683 +422,396 @@
             border: 2px solid var(--primary-yellow);
             border-radius: 14px;
             overflow: hidden;
-            background: var(--white);
         }
-
-        .price-row {
-            display: flex;
-            align-items: stretch;
-            background: var(--white);
-        }
-
+        .price-row { display: flex; align-items: stretch; }
         .price-row-header {
             background: var(--primary-yellow);
-            padding: clamp(0.6rem, 1.8vw, 0.9rem);
+            padding: 0.7rem;
             font-weight: 700;
-            min-width: clamp(110px, 18vw, 150px);
+            min-width: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(0.8rem, 2.1vw, 0.95rem);
-            flex-shrink: 0;
-            text-align: center;
         }
-
         .price-row-body {
             flex: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(min(110px, 100%), 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             gap: 1px;
             background: #eee;
         }
-
         .price-cell {
             display: flex;
             flex-direction: column;
             background: var(--white);
             padding: 0.4rem;
-            min-width: 0;
         }
-
         .price-cell-header {
-            font-size: clamp(0.7rem, 1.8vw, 0.85rem);
+            font-size: 0.85rem;
             color: #555;
             font-weight: 600;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.3rem;
             text-align: center;
             background: var(--light-yellow);
-            padding: 0.25rem;
+            padding: 0.3rem;
             border-radius: 6px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
-
         .price-cell input {
-            padding: clamp(0.35rem, 1.2vw, 0.55rem);
-            font-size: clamp(0.85rem, 2.1vw, 1rem);
+            padding: 0.5rem;
+            font-size: 0.9rem;
             border: 2px solid #ddd;
             border-radius: 8px;
             text-align: center;
             width: 100%;
-            min-width: 0;
-            min-height: var(--min-touch-target);
         }
-
-        .price-cell input:focus { border-color: var(--primary-yellow); outline: none; box-shadow: 0 0 0 2px rgba(255,215,0,0.3); }
-
         .price-help {
-            font-size: clamp(0.8rem, 2.1vw, 0.9rem);
+            font-size: 0.9rem;
             color: #555;
             margin-bottom: 0.7rem;
             background: var(--light-yellow);
-            padding: clamp(0.6rem, 1.8vw, 0.9rem);
+            padding: 0.8rem;
             border-radius: 10px;
-            line-height: 1.5;
             border-left: 4px solid var(--primary-yellow);
         }
-
         .variant-editor {
             background: var(--light-yellow);
-            padding: clamp(0.6rem, 1.8vw, 0.9rem);
+            padding: 0.8rem;
             border-radius: 12px;
             margin-bottom: 0.7rem;
-            border: 1px solid rgba(255,215,0,0.3);
         }
-
-        .variant-editor-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.4rem;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-        }
-
-        .variant-list { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-
+        .variant-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
         .variant-tag {
             display: flex;
             align-items: center;
             gap: 0.3rem;
             background: var(--white);
-            padding: 0.25rem 0.6rem;
+            padding: 0.3rem 0.6rem;
             border-radius: 24px;
-            font-size: clamp(0.75rem, 2vw, 0.9rem);
+            font-size: 0.9rem;
             border: 1px solid #ddd;
-            min-height: var(--min-touch-target);
         }
-
         .variant-tag input {
             border: none;
             background: transparent;
-            font-size: clamp(0.75rem, 2vw, 0.9rem);
-            width: clamp(75px, 18vw, 100px);
-            padding: 0;
-            min-width: 0;
-            min-height: var(--min-touch-target);
+            font-size: 0.9rem;
+            width: 100px;
         }
-
-        .variant-tag input:focus { outline: none; }
-
         .remove-variant {
             color: var(--danger);
             cursor: pointer;
             background: none;
             border: none;
             font-size: 1.1rem;
-            padding: 0;
-            line-height: 1;
-            flex-shrink: 0;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
         }
-
-        .remove-variant:hover { background: rgba(220,53,69,0.1); }
-
         .add-variant-btn {
             background: var(--success);
             color: white;
             border: none;
-            padding: 0.3rem 0.7rem;
+            padding: 0.4rem 0.8rem;
             border-radius: 24px;
             cursor: pointer;
-            font-size: clamp(0.75rem, 2vw, 0.85rem);
-            margin-top: 0.4rem;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
+            margin-top: 0.5rem;
             font-weight: 600;
-            transition: var(--transition);
         }
-
-        .add-variant-btn:hover { background: #218838; transform: translateY(-2px); }
-
         .outlet-section {
-            background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
+            background: linear-gradient(135deg, var(--black) 0%, #2d2d2d 100%);
             color: var(--white);
-            padding: clamp(2.5rem, 6vw, 5rem) clamp(1rem, 3.5vw, 2.5rem);
-            margin-top: clamp(2.5rem, 6vw, 5rem);
+            padding: 4rem 2rem;
+            margin-top: 4rem;
             width: 100%;
         }
-
-        .outlet-container { max-width: 1250px; margin: 0 auto; width: 100%; }
-
+        .outlet-container { max-width: 1250px; margin: 0 auto; }
         .outlet-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
-            gap: clamp(1.2rem, 3.5vw, 2.3rem);
-            margin-top: 1.8rem;
-            width: 100%;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
-
         .outlet-card {
             background: rgba(255,255,255,0.06);
-            padding: clamp(1.2rem, 3.5vw, 1.8rem);
+            padding: 1.5rem;
             border-radius: 16px;
-            border: 1px solid rgba(255,215,0,0.35);
-            transition: var(--transition);
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+            border: 1px solid rgba(255,215,0,0.3);
         }
-
-        .outlet-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--primary-yellow);
-            box-shadow: 0 12px 35px rgba(255,215,0,0.25);
-            background: rgba(255,255,255,0.1);
-        }
-
         .outlet-icon {
-            font-size: clamp(1.6rem, 4.5vw, 2.2rem);
+            font-size: 2rem;
             color: var(--primary-yellow);
             margin-bottom: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 50px;
         }
-
         .outlet-card h3 {
-            font-size: clamp(1.05rem, 2.8vw, 1.25rem);
+            font-size: 1.2rem;
             margin-bottom: 0.7rem;
             color: var(--primary-yellow);
-            font-weight: 700;
         }
-
         .outlet-card p, .outlet-card a {
             color: #e0e0e0;
             text-decoration: none;
             line-height: 1.7;
-            font-size: clamp(0.9rem, 2.4vw, 1rem);
-            word-wrap: break-word;
         }
-
-        .outlet-card a { font-weight: 600; }
-        .outlet-card a:hover { color: var(--primary-yellow); text-decoration: underline; }
-
-        .social-links { display: flex; gap: 0.7rem; margin-top: 0.8rem; flex-wrap: wrap; }
-
+        .outlet-card a:hover { color: var(--primary-yellow); }
+        .social-links { display: flex; gap: 0.7rem; margin-top: 0.8rem; }
         .social-links a {
-            width: clamp(40px, 9vw, 44px);
-            height: clamp(40px, 9vw, 44px);
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: var(--primary-yellow);
             color: var(--black);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: clamp(1rem, 2.8vw, 1.2rem);
+            font-size: 1.2rem;
             transition: var(--transition);
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
         }
-
-        .social-links a:hover {
-            transform: translateY(-4px) rotate(360deg);
-            box-shadow: 0 6px 20px rgba(255,215,0,0.45);
-            background: var(--white);
-        }
-
+        .social-links a:hover { transform: translateY(-4px); }
         footer {
             background: var(--black);
             color: var(--white);
             text-align: center;
-            padding: clamp(1.2rem, 3.5vw, 1.8rem);
+            padding: 1.5rem;
             width: 100%;
             margin-top: auto;
         }
-
-        footer p { color: #aaa; font-size: clamp(0.85rem, 2.3vw, 0.95rem); line-height: 1.5; }
-
+        footer p { color: #aaa; }
         .whatsapp-float {
             position: fixed;
-            bottom: clamp(18px, 3.5vw, 28px);
-            right: clamp(18px, 3.5vw, 28px);
+            bottom: 25px;
+            right: 25px;
             background: #25D366;
             color: white;
-            width: clamp(54px, 13vw, 60px);
-            height: clamp(54px, 13vw, 60px);
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            font-size: clamp(26px, 6.5vw, 30px);
+            font-size: 30px;
             box-shadow: 0 6px 25px rgba(37,211,102,0.5);
             z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
             text-decoration: none;
-            transition: var(--transition);
-            animation: pulse 2.5s infinite;
-            min-height: var(--min-touch-target);
-            min-width: var(--min-touch-target);
+            animation: pulse 2s infinite;
         }
-
-        .whatsapp-float:hover { transform: scale(1.12) rotate(5deg); box-shadow: 0 8px 30px rgba(37,211,102,0.7); }
-        .whatsapp-float:active { transform: scale(0.95); }
-
         @keyframes pulse {
             0%, 100% { box-shadow: 0 6px 25px rgba(37,211,102,0.5); }
             50% { box-shadow: 0 6px 35px rgba(37,211,102,0.8); }
         }
-
-        .success-msg { background: var(--success); color: white; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1rem; font-size: clamp(0.85rem, 2.2vw, 0.95rem); border-left: 4px solid rgba(255,255,255,0.5); }
-        .error-msg { background: var(--danger); color: white; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1rem; font-size: clamp(0.85rem, 2.2vw, 0.95rem); border-left: 4px solid rgba(255,255,255,0.5); }
-
+        .success-msg { background: var(--success); color: white; padding: 0.8rem; border-radius: 12px; margin-bottom: 1rem; }
+        .error-msg { background: var(--danger); color: white; padding: 0.8rem; border-radius: 12px; margin-bottom: 1rem; }
         .confirm-dialog {
             background: var(--white);
-            padding: clamp(1.4rem, 3.5vw, 1.8rem);
+            padding: 1.5rem;
             border-radius: 18px;
             text-align: center;
             max-width: 400px;
-            width: 100%;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.25);
         }
-
-        .confirm-dialog p { margin-bottom: 1.2rem; font-weight: 600; font-size: clamp(0.95rem, 2.6vw, 1.05rem); line-height: 1.5; }
-        .confirm-buttons { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
-
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-25px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes modalSlideIn { from { opacity: 0; transform: scale(0.92) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-        @media (min-width: 1400px) {
-            .products-grid { grid-template-columns: repeat(4, 1fr); }
-            .outlet-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        
-        @media (max-width: 1024px) {
-            .products-grid { grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); }
-            .product-detail-grid { grid-template-columns: 1fr 1fr; }
-        }
-
+        .confirm-buttons { display: flex; gap: 0.8rem; justify-content: center; margin-top: 1rem; }
         @media (max-width: 768px) {
-            nav { padding: 0.7rem 1.2rem; }
-            .brand-name { font-size: clamp(0.95rem, 4vw, 1.4rem); }
-            .nav-links { gap: 0.25rem; }
-            .nav-links a, .nav-links button { padding: 0.45rem 0.7rem; font-size: clamp(0.75rem, 2.3vw, 0.9rem); }
-            .user-info { font-size: clamp(0.75rem, 2.1vw, 0.85rem); }
-
-            .hero { padding: clamp(2.2rem, 9vw, 4.5rem) clamp(1.2rem, 4.5vw, 2.8rem); }
-            .hero h1 { font-size: clamp(1.3rem, 6vw, 2.2rem); }
-            .hero p { font-size: clamp(0.9rem, 3vw, 1.05rem); }
-            .cta-buttons { gap: 0.9rem; }
-            .btn { padding: 0.8rem 1.8rem; font-size: clamp(0.9rem, 2.4vw, 1rem); }
-
-            .product-image-container { height: clamp(170px, 32vw, 230px); }
-            .product-title { font-size: clamp(1.05rem, 2.9vw, 1.15rem); }
-            .product-price-preview { font-size: clamp(1.1rem, 3vw, 1.2rem); }
-
             .product-detail-grid { grid-template-columns: 1fr; }
-            .product-detail-image { max-width: 350px; margin: 0 auto; }
-            .product-detail-image img { max-height: 350px; }
-
-            .price-row { flex-direction: column; }
-            .price-row-header {
-                min-width: auto;
-                width: 100%;
-                justify-content: center;
-                text-align: center;
-                padding: 0.7rem;
-            }
-            .price-row-body {
-                grid-template-columns: repeat(auto-fill, minmax(min(95px, 100%), 1fr));
-            }
-
-            .modal-content { padding: 1.1rem; border-radius: 16px; }
-            .modal-header h2 { font-size: clamp(1.2rem, 4vw, 1.45rem); }
-            .form-group input, .form-group textarea, .form-group select { padding: 0.7rem; font-size: clamp(0.95rem, 2.4vw, 1rem); }
-
-            .outlet-section { padding: clamp(2.5rem, 6.5vw, 4.5rem) clamp(1.2rem, 4vw, 2.2rem); }
-            .outlet-grid { gap: 1.3rem; }
-
-            .whatsapp-float { bottom: 20px; right: 20px; width: 56px; height: 56px; font-size: 27px; }
-        }
-
-        @media (max-width: 480px) {
-            nav { padding: 0.6rem 1rem; flex-wrap: wrap; }
-            .brand-name { font-size: clamp(0.9rem, 4.5vw, 1.2rem); letter-spacing: 0.8px; width: 100%; text-align: center; margin-bottom: 0.3rem; }
-            .nav-links { width: 100%; justify-content: center; gap: 0.2rem; flex-wrap: wrap; }
-            .nav-links a, .nav-links button { padding: 0.4rem 0.6rem; font-size: clamp(0.7rem, 2.4vw, 0.85rem); border-radius: 8px; }
-
-            .hero { padding: 2.2rem 1rem; }
-            .hero h1 { font-size: clamp(1.25rem, 6.5vw, 1.9rem); }
-            .hero p { font-size: clamp(0.85rem, 3.3vw, 1rem); }
-            .cta-buttons { flex-direction: column; align-items: center; }
-            .btn { width: 100%; max-width: 300px; justify-content: center; padding: 0.85rem 2rem; }
-
-            .products-section { padding: 2.2rem 0.9rem; }
-            .section-title { font-size: clamp(1.25rem, 5.5vw, 1.7rem); }
-            .category-tabs { gap: 0.4rem; padding: 0 0.3rem; }
-            .tab-btn { padding: 0.55rem 1.1rem; font-size: clamp(0.75rem, 2.3vw, 0.9rem); }
-
-            .products-grid { grid-template-columns: 1fr; gap: 1.1rem; }
-
-            .product-image-container { height: 210px; }
-            .product-info { padding: 0.9rem; }
-            .product-title { font-size: 1.05rem; }
-            .product-price-preview { font-size: 1.15rem; }
-
-            .modal-content { padding: 0.9rem; border-radius: 14px; max-height: 94vh; }
-            .modal-header { margin-bottom: 1rem; padding-bottom: 0.8rem; }
-            .modal-header h2 { font-size: 1.15rem; }
-            .form-group { margin-bottom: 0.95rem; }
-            .form-group input, .form-group textarea, .form-group select { padding: 0.65rem; font-size: 0.95rem; }
-
-            .price-row-body { grid-template-columns: repeat(2, 1fr); }
-            .price-cell { padding: 0.35rem; }
-            .price-cell-header { font-size: 0.75rem; padding: 0.2rem; }
-
-            .outlet-section { padding: 2.3rem 0.9rem; }
-            .outlet-grid { gap: 1.1rem; }
-            .outlet-card { padding: 1.1rem; }
-
-            .whatsapp-float { bottom: 16px; right: 16px; width: 52px; height: 52px; font-size: 25px; }
-            
-            .variant-options { gap: 0.4rem; }
-            .variant-btn { padding: 0.5rem 0.9rem; font-size: 0.85rem; }
-        }
-
-        @media (max-width: 360px) {
-            .brand-name { font-size: 0.85rem; letter-spacing: 0.4px; }
-            .nav-links a, .nav-links button { padding: 0.35rem 0.5rem; font-size: 0.7rem; }
-            .hero h1 { font-size: 1.15rem; }
-            .products-grid { gap: 0.9rem; }
-            .product-image-container { height: 190px; }
-            .price-row-body { grid-template-columns: 1fr 1fr; }
-            .cta-buttons .btn { max-width: 280px; }
-            .modal-content { padding: 0.8rem; }
-        }
-
-        @media (max-width: 768px) and (orientation: landscape) {
-            .hero { padding: 1.6rem 1rem; }
-            .hero h1 { font-size: 1.4rem; }
-            .modal-content { max-height: 88vh; }
-            .product-detail-grid { grid-template-columns: 1fr 1fr; }
-            .product-detail-image img { max-height: 280px; }
-            .products-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            body { -webkit-font-smoothing: antialiased; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        @media (prefers-color-scheme: dark) {
-            .product-card, .modal-content, .variant-tag, .price-cell { background: #1e1e1e; color: #f0f0f0; }
-            .form-group input, .form-group textarea, .form-group select { background: #2a2a2a; border-color: #444; color: #fff; }
-            .price-help, .login-info-box { background: #2a2a2a; border-left-color: var(--primary-yellow); }
-        }
-
-        html, body { min-height: 100%; }
-        .google-sites-wrapper { width: 100%; min-height: 100vh; }
-
-        #productDetailContent .product-detail-info,
-        #productDetailContent .product-detail-info h3,
-        #productDetailContent .product-detail-description,
-        #productDetailContent .variant-label,
-        #productDetailContent .product-detail-info div:not(.product-detail-price),
-        #productDetailContent .product-detail-info span:not(.product-detail-price),
-        #productDetailContent .product-detail-info p {
-            color: #ffffff !important;
-        }
-        #productDetailContent .product-detail-description strong {
-            color: var(--primary-yellow) !important;
-        }
-        #productDetailContent [style*="background:var(--light-yellow)"] {
-            background: rgba(255, 215, 0, 0.15) !important;
-            border-left-color: var(--primary-yellow) !important;
-            color: #ffffff !important;
-        }
-        #productDetailContent [style*="background:var(--light-yellow)"] strong {
-            color: var(--primary-yellow) !important;
-        }
-        #productDetailContent [style*="background:var(--light-yellow)"] span,
-        #productDetailContent [style*="background:var(--light-yellow)"] p,
-        #productDetailContent [style*="background:var(--light-yellow)"] div {
-            color: #ffffff !important;
+            .products-grid { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
-    <div class="google-sites-wrapper">
-        <header>
-            <nav>
-                <div class="brand-name">Gadget Ganteng Store</div>
-                <ul class="nav-links">
-                    <li><a href="#home">Beranda</a></li>
-                    <li><a href="#products">Produk</a></li>
-                    <li><a href="#outlet">Outlet</a></li>
-                    <li id="navLogin"><button class="login-btn" onclick="openLoginModal()"><i class="fas fa-user"></i> Login</button></li>
-                    <li id="navAdminBtn" style="display:none;"><button class="add-product-btn" onclick="openAddProductModal()"><i class="fas fa-plus"></i> Tambah</button></li>
-                    <li id="navUserInfo" style="display:none;">
-                        <div class="user-info"><span id="userNameDisplay"></span><button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button></div>
-                    </li>
-                </ul>
-            </nav>
-        </header>
+    <header>
+        <nav>
+            <div class="brand-name">Gadget Ganteng Store</div>
+            <ul class="nav-links">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#products">Produk</a></li>
+                <li><a href="#outlet">Outlet</a></li>
+                <li id="navLogin"><button class="login-btn" onclick="openLoginModal()"><i class="fas fa-user"></i> Login</button></li>
+                <li id="navAdminBtn" style="display:none;"><button class="add-product-btn" onclick="openAddProductModal()"><i class="fas fa-plus"></i> Tambah</button></li>
+                <li id="navUserInfo" style="display:none;">
+                    <div class="user-info"><span id="userNameDisplay"></span><button class="logout-btn" onclick="logout()">Logout</button></div>
+                </li>
+            </ul>
+        </nav>
+    </header>
 
-        <section class="hero" id="home">
-            <h1>Selamat Datang di Gadget Ganteng Store</h1>
-            <p>Tempat Jual Beli iPhone & iPad Berkualitas dengan Harga Terbaik di Salatiga</p>
-            <div class="cta-buttons">
-                <a href="#products" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Lihat Produk</a>
-                <a href="https://wa.me/6285800302777" class="btn btn-secondary" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Hubungi Kami</a>
-            </div>
-        </section>
+    <section class="hero" id="home">
+        <h1>Selamat Datang di Gadget Ganteng Store</h1>
+        <p>Tempat Jual Beli iPhone & iPad Berkualitas dengan Harga Terbaik di Salatiga</p>
+        <div class="cta-buttons">
+            <a href="#products" class="btn btn-primary"><i class="fas fa-shopping-cart"></i> Lihat Produk</a>
+            <a href="https://wa.me/6285800302777" class="btn btn-secondary" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi Kami</a>
+        </div>
+    </section>
 
-        <section class="products-section" id="products">
-            <h2 class="section-title">Produk Kami</h2>
-            <div class="category-tabs">
-                <button class="tab-btn active" onclick="filterProducts('all')">Semua</button>
-                <button class="tab-btn" onclick="filterProducts('iphone')">iPhone</button>
-                <button class="tab-btn" onclick="filterProducts('ipad')">iPad</button>
-            </div>
-            <div class="products-grid" id="productsGrid"></div>
-        </section>
+    <section class="products-section" id="products">
+        <h2 class="section-title">Produk Kami</h2>
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="filterProducts('all')">Semua</button>
+            <button class="tab-btn" onclick="filterProducts('iphone')">iPhone</button>
+            <button class="tab-btn" onclick="filterProducts('ipad')">iPad</button>
+        </div>
+        <div class="products-grid" id="productsGrid"></div>
+    </section>
 
-        <section class="outlet-section" id="outlet">
-            <div class="outlet-container">
-                <h2 class="section-title" style="color: var(--primary-yellow);">Informasi Outlet</h2>
-                <div class="outlet-grid">
-                    <div class="outlet-card">
-                        <div class="outlet-icon"><i class="fas fa-map-marker-alt"></i></div>
-                        <h3>Alamat</h3>
-                        <p>Jl. Imam Bonjol, Sraten Dua, Kecandran<br>Kec. Sidomukti, Kota Salatiga<br>Jawa Tengah 50742</p>
-                    </div>
-                    <div class="outlet-card">
-                        <div class="outlet-icon"><i class="fab fa-whatsapp"></i></div>
-                        <h3>WhatsApp</h3>
-                        <a href="https://wa.me/6285800302777" target="_blank" rel="noopener">0858-0030-2777</a>
-                        <p style="margin-top: 0.4rem; font-size: 0.9rem;">Respon cepat untuk pertanyaan Anda</p>
-                    </div>
-                    <div class="outlet-card">
-                        <div class="outlet-icon"><i class="fas fa-share-alt"></i></div>
-                        <h3>Social Media</h3>
-                        <div class="social-links">
-                            <a href="https://www.tiktok.com/@gadget.ganteng.store" target="_blank" rel="noopener" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-                            <a href="https://www.instagram.com/gadgetganteng/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                        </div>
-                        <p style="margin-top: 0.8rem; font-size: 0.9rem;">Follow kami untuk update produk terbaru</p>
+    <section class="outlet-section" id="outlet">
+        <div class="outlet-container">
+            <h2 class="section-title" style="color: var(--primary-yellow);">Informasi Outlet</h2>
+            <div class="outlet-grid">
+                <div class="outlet-card">
+                    <div class="outlet-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Alamat</h3>
+                    <p>Jl. Imam Bonjol, Sraten Dua, Kecandran<br>Kec. Sidomukti, Kota Salatiga<br>Jawa Tengah 50742</p>
+                </div>
+                <div class="outlet-card">
+                    <div class="outlet-icon"><i class="fab fa-whatsapp"></i></div>
+                    <h3>WhatsApp</h3>
+                    <a href="https://wa.me/6285800302777" target="_blank">0858-0030-2777</a>
+                </div>
+                <div class="outlet-card">
+                    <div class="outlet-icon"><i class="fas fa-share-alt"></i></div>
+                    <h3>Social Media</h3>
+                    <div class="social-links">
+                        <a href="https://www.tiktok.com/@gadget.ganteng.store" target="_blank"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.instagram.com/gadgetganteng/" target="_blank"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <footer id="contact">
-            <p>&copy; 2026 Gadget Ganteng Store. All Rights Reserved.</p>
-            <p style="margin-top: 0.3rem;">Salatiga, Jawa Tengah, Indonesia</p>
-        </footer>
-
-        <a href="https://wa.me/6285800302777" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat via WhatsApp"><i class="fab fa-whatsapp"></i></a>
-
-        <!-- LOGIN MODAL -->
-        <div class="modal" id="loginModal">
-            <div class="modal-content login-container">
-                <div class="modal-header">
-                    <h2><i class="fas fa-user"></i> Login</h2>
-                    <button class="close-modal" onclick="closeLoginModal()">&times;</button>
-                </div>
-                <div class="login-tabs">
-                    <div class="login-tab active" onclick="switchLoginTab('customer')"><i class="fas fa-user"></i> Customer</div>
-                    <div class="login-tab" onclick="switchLoginTab('admin')"><i class="fas fa-user-shield"></i> Admin</div>
-                </div>
-                <div id="loginMessage"></div>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label for="loginName">Nama Lengkap <span style="color:red">*</span></label>
-                        <input type="text" id="loginName" required placeholder="Masukkan nama lengkap">
-                    </div>
-                    <div class="form-group">
-                        <label for="loginPhone">Nomor WhatsApp <span style="color:red">*</span></label>
-                        <input type="tel" id="loginPhone" required placeholder="Masukkan nomor WhatsApp">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-sign-in-alt"></i> Login</button>
-                </form>
-                <div id="customerInfoBox" class="login-info-box"><strong>Info Login Customer:</strong><br>Gunakan nama dan nomor WhatsApp Anda</div>
-                <div id="adminInfoBox" class="login-info-box" style="display:none;"><strong>Info Login Admin:</strong><br>rahasia dong :D</div>
             </div>
         </div>
+    </section>
 
-        <!-- PRODUCT DETAIL MODAL -->
-        <div class="modal" id="productDetailModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 id="detailTitle">Detail Produk</h2>
-                    <button class="close-modal" onclick="closeProductDetail()">&times;</button>
-                </div>
-                <div id="productDetailContent"></div>
+    <footer>
+        <p>&copy; 2026 Gadget Ganteng Store. All Rights Reserved.</p>
+    </footer>
+
+    <a href="https://wa.me/6285800302777" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+    <!-- LOGIN MODAL -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content login-container">
+            <div class="modal-header">
+                <h2><i class="fas fa-user"></i> Login</h2>
+                <button class="close-modal" onclick="closeLoginModal()">&times;</button>
             </div>
-        </div>
-
-        <!-- EDIT PRODUCT MODAL -->
-        <div class="modal" id="editProductModal">
-            <div class="modal-content" style="max-width:850px;">
-                <div class="modal-header">
-                    <h2><i class="fas fa-edit"></i> Edit Produk</h2>
-                    <button class="close-modal" onclick="closeEditModal()">&times;</button>
-                </div>
-                <div id="editMessage"></div>
-                <form id="editProductForm" onsubmit="saveProductEdit(event)">
-                    <input type="hidden" id="editProductId">
-                    <div class="form-group"><label for="editProductName">Nama Produk</label><input type="text" id="editProductName" required></div>
-                    <div class="form-group"><label for="editProductDesc">Deskripsi / Spesifikasi</label><textarea id="editProductDesc" required></textarea></div>
-                    <div class="form-group"><label for="editProductBadge">Badge / Kondisi</label><input type="text" id="editProductBadge" placeholder="Second iBox, Inter, dll"></div>
-                    <div class="form-group">
-                        <label>Varian Sinyal</label>
-                        <div class="variant-editor">
-                            <div class="variant-editor-header"><strong>Daftar Varian Sinyal</strong></div>
-                            <div class="variant-list" id="signalList"></div>
-                            <button type="button" class="add-variant-btn" onclick="addVariant('signal')">+ Tambah</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Varian Storage</label>
-                        <div class="variant-editor">
-                            <div class="variant-editor-header"><strong>Daftar Varian Storage</strong></div>
-                            <div class="variant-list" id="storageList"></div>
-                            <button type="button" class="add-variant-btn" onclick="addVariant('storage')">+ Tambah</button>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Harga (Rp) per Kombinasi Sinyal & Storage</label>
-                        <div class="price-help"><i class="fas fa-info-circle"></i> Masukkan harga lengkap dalam Rupiah untuk setiap kombinasi.</div>
-                        <div id="priceGridContainer"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Ganti Foto Produk</label>
-                        <div class="image-upload" onclick="document.getElementById('editProductImage').click()">
-                            <i class="fas fa-camera" style="font-size:1.9rem;color:var(--primary-yellow);margin-bottom:0.5rem;"></i>
-                            <p>Klik untuk upload foto</p>
-                            <input type="file" id="editProductImage" accept="image/*" style="display:none;" onchange="previewEditImage(this)">
-                        </div>
-                        <img id="editImagePreview" style="max-width:100%;margin-top:0.9rem;border-radius:12px;display:none;" alt="Preview">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-save"></i> Simpan Perubahan</button>
-                </form>
+            <div class="login-tabs">
+                <div class="login-tab active" onclick="switchLoginTab('customer')">Customer</div>
+                <div class="login-tab" onclick="switchLoginTab('admin')">Admin</div>
             </div>
-        </div>
-
-        <!-- ADD PRODUCT MODAL -->
-        <div class="modal" id="addProductModal">
-            <div class="modal-content" style="max-width:850px;">
-                <div class="modal-header">
-                    <h2><i class="fas fa-plus"></i> Tambah Produk</h2>
-                    <button class="close-modal" onclick="closeAddProductModal()">&times;</button>
+            <div id="loginMessage"></div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Nama Lengkap *</label>
+                    <input type="text" id="loginName" required placeholder="Masukkan nama lengkap">
                 </div>
-                <div id="addMessage"></div>
-                <form id="addProductForm" onsubmit="addNewProduct(event)">
-                    <div class="form-group"><label for="newProductName">Nama Produk <span style="color:red">*</span></label><input type="text" id="newProductName" required placeholder="Contoh: iPhone 13"></div>
-                    <div class="form-group">
-                        <label for="newProductCategory">Kategori <span style="color:red">*</span></label>
-                        <select id="newProductCategory" required>
-                            <option value="iphone">iPhone</option>
-                            <option value="ipad">iPad</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label for="newProductDesc">Deskripsi <span style="color:red">*</span></label><textarea id="newProductDesc" required></textarea></div>
-                    <div class="form-group"><label for="newProductBadge">Badge / Kondisi</label><input type="text" id="newProductBadge" placeholder="Second iBox, Inter, dll"></div>
-                    <div class="form-group"><label for="newProductSignal">Varian Sinyal (pisahkan koma)</label><input type="text" id="newProductSignal" value="All Operator, Beacukai"></div>
-                    <div class="form-group"><label for="newProductStorage">Varian Storage (pisahkan koma) <span style="color:red">*</span></label><input type="text" id="newProductStorage" value="128GB, 256GB, 512GB" required></div>
-                    <div class="form-group">
-                        <label>Harga (Rp) per Kombinasi <span style="color:red">*</span></label>
-                        <div class="price-help"><i class="fas fa-info-circle"></i> Masukkan harga lengkap dalam Rupiah.</div>
-                        <div id="newPriceGridContainer"></div>
-                    </div>
-                    <div class="form-group">
-                        <label>Foto Produk <span style="color:red">*</span></label>
-                        <div class="image-upload" onclick="document.getElementById('newProductImage').click()">
-                            <i class="fas fa-upload" style="font-size:1.9rem;color:var(--primary-yellow);margin-bottom:0.5rem;"></i>
-                            <p>Klik untuk upload foto</p>
-                            <input type="file" id="newProductImage" accept="image/*" style="display:none;" required onchange="previewNewImage(this)">
-                        </div>
-                        <img id="newImagePreview" style="max-width:100%;margin-top:0.9rem;border-radius:12px;display:none;" alt="Preview">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-plus"></i> Tambah Produk</button>
-                </form>
+                <div class="form-group">
+                    <label>Nomor WhatsApp *</label>
+                    <input type="tel" id="loginPhone" required placeholder="Masukkan nomor WhatsApp">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Login</button>
+            </form>
+            <div id="customerInfoBox" class="login-info-box"><strong>Info Login Customer:</strong><br>Gunakan nama dan nomor WhatsApp Anda</div>
+            <div id="adminInfoBox" class="login-info-box" style="display:none;"><strong>Info Login Admin:</strong><br>Nama: Admin<br>WA: 085800302777</div>
+        </div>
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div class="modal" id="productDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="detailTitle">Detail Produk</h2>
+                <button class="close-modal" onclick="closeProductDetail()">&times;</button>
             </div>
+            <div id="productDetailContent"></div>
         </div>
+    </div>
 
-        <!-- DELETE MODAL -->
-        <div class="modal" id="deleteModal">
-            <div class="modal-content confirm-dialog">
-                <h3><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i> Hapus Produk?</h3>
-                <p id="deleteConfirmText">Apakah Anda yakin?</p>
-                <div class="confirm-buttons">
-                    <button class="btn" onclick="closeDeleteModal()">Batal</button>
-                    <button class="btn btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
+    <!-- EDIT PRODUCT MODAL -->
+    <div class="modal" id="editProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Produk</h2>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div id="editMessage"></div>
+            <form id="editProductForm" onsubmit="saveProductEdit(event)">
+                <input type="hidden" id="editProductId">
+                <div class="form-group"><label>Nama Produk</label><input type="text" id="editProductName" required></div>
+                <div class="form-group"><label>Deskripsi</label><textarea id="editProductDesc" required></textarea></div>
+                <div class="form-group"><label>Badge</label><input type="text" id="editProductBadge"></div>
+                <div class="form-group">
+                    <label>Varian Sinyal</label>
+                    <div class="variant-editor">
+                        <div class="variant-list" id="signalList"></div>
+                        <button type="button" class="add-variant-btn" onclick="addVariant('signal')">+ Tambah</button>
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label>Varian Storage</label>
+                    <div class="variant-editor">
+                        <div class="variant-list" id="storageList"></div>
+                        <button type="button" class="add-variant-btn" onclick="addVariant('storage')">+ Tambah</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Harga per Kombinasi</label>
+                    <div class="price-help">Masukkan harga untuk setiap kombinasi</div>
+                    <div id="priceGridContainer"></div>
+                </div>
+                <div class="form-group">
+                    <label>Ganti Foto</label>
+                    <div class="image-upload" onclick="document.getElementById('editProductImage').click()">
+                        <i class="fas fa-camera" style="font-size:2rem;color:var(--primary-yellow);margin-bottom:0.5rem;"></i>
+                        <p>Klik untuk upload foto</p>
+                        <input type="file" id="editProductImage" accept="image/*" style="display:none;" onchange="previewEditImage(this)">
+                    </div>
+                    <img id="editImagePreview" style="max-width:100%;margin-top:1rem;border-radius:12px;display:none;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Simpan</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADD PRODUCT MODAL -->
+    <div class="modal" id="addProductModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus"></i> Tambah Produk</h2>
+                <button class="close-modal" onclick="closeAddProductModal()">&times;</button>
+            </div>
+            <div id="addMessage"></div>
+            <form id="addProductForm" onsubmit="addNewProduct(event)">
+                <div class="form-group"><label>Nama Produk *</label><input type="text" id="newProductName" required></div>
+                <div class="form-group">
+                    <label>Kategori *</label>
+                    <select id="newProductCategory" required>
+                        <option value="iphone">iPhone</option>
+                        <option value="ipad">iPad</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>Deskripsi *</label><textarea id="newProductDesc" required></textarea></div>
+                <div class="form-group"><label>Badge</label><input type="text" id="newProductBadge"></div>
+                <div class="form-group"><label>Varian Sinyal</label><input type="text" id="newProductSignal" value="All Operator, Beacukai"></div>
+                <div class="form-group"><label>Varian Storage *</label><input type="text" id="newProductStorage" value="128GB, 256GB, 512GB" required></div>
+                <div class="form-group">
+                    <label>Harga per Kombinasi *</label>
+                    <div class="price-help">Masukkan harga untuk setiap kombinasi</div>
+                    <div id="newPriceGridContainer"></div>
+                </div>
+                <div class="form-group">
+                    <label>Foto Produk *</label>
+                    <div class="image-upload" onclick="document.getElementById('newProductImage').click()">
+                        <i class="fas fa-upload" style="font-size:2rem;color:var(--primary-yellow);margin-bottom:0.5rem;"></i>
+                        <p>Klik untuk upload foto</p>
+                        <input type="file" id="newProductImage" accept="image/*" style="display:none;" onchange="previewNewImage(this)">
+                    </div>
+                    <img id="newImagePreview" style="max-width:100%;margin-top:1rem;border-radius:12px;display:none;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;">Tambah Produk</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content confirm-dialog">
+            <h3><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i> Hapus Produk?</h3>
+            <p id="deleteConfirmText">Apakah Anda yakin?</p>
+            <div class="confirm-buttons">
+                <button class="btn" onclick="closeDeleteModal()">Batal</button>
+                <button class="btn btn-danger" id="confirmDeleteBtn">Ya, Hapus</button>
             </div>
         </div>
     </div>
@@ -1371,14 +821,9 @@
         const ADMIN_PHONE = "085800302777";
 
         const DEFAULT_PRODUCTS = [
-            { id: 1, name: "iPhone 11", category: "iphone", description: "iPhone 11 dengan kamera dual 12MP, chip A13 Bionic, layar Liquid Retina 6.1 inch, Face ID, tahan air IP68", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4799000, "128GB": 3999000, "256GB": 4499000 }, "Beacukai": { "64GB": 5299000, "128GB": 4499000, "256GB": 4999000 } }, badge: "Second iBox", image: "https://images.unsplash.com/photo-1573148195900-7845dcb9b557?w=400&h=400&fit=crop&auto=format" },
-            { id: 2, name: "iPhone 12", category: "iphone", description: "iPhone 12 dengan desain flat edge, 5G ready, chip A14 Bionic, kamera dual 12MP, layar Super Retina XDR 6.1 inch", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4299000, "128GB": 4499000, "256GB": 4999000 }, "Beacukai": { "64GB": 4799000, "128GB": 4999000, "256GB": 5499000 } }, badge: "Inter Allop", image: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400&h=400&fit=crop&auto=format" },
-            { id: 3, name: "iPhone 13", category: "iphone", description: "iPhone 13 dengan chip A15 Bionic, kamera dual 12MP sensor-shift OIS, layar Super Retina XDR 6.1 inch, Cinematic mode", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["128GB", "256GB", "512GB"], prices: { "All Operator": { "128GB": 5699000, "256GB": 6299000, "512GB": 7199000 }, "Beacukai": { "128GB": 6950000, "256GB": 7799000, "512GB": 8499000 } }, badge: "Inter Allop", image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400&h=400&fit=crop&auto=format" },
-            { id: 4, name: "iPhone 13 Pro", category: "iphone", description: "iPhone 13 Pro ProMotion 120Hz, chip A15 Bionic, kamera triple 12MP, FREE ALL IN", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["128GB", "256GB", "512GB", "1TB"], prices: { "All Operator": { "128GB": 7499000, "256GB": 8299000, "512GB": 9499000, "1TB": 11999000 }, "Beacukai": { "128GB": 8999000, "256GB": 9999000, "512GB": 11499000, "1TB": 13999000 } }, badge: "FREE ALL IN", image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=400&fit=crop&auto=format" },
-            { id: 5, name: "iPhone 14 Pro", category: "iphone", description: "iPhone 14 Pro Dynamic Island, chip A16 Bionic, kamera 48MP, layar Super Retina XDR 6.1 inch", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["128GB", "256GB", "512GB", "1TB"], prices: { "All Operator": { "128GB": 10850000, "256GB": 11850000, "512GB": 13450000, "1TB": 15999000 }, "Beacukai": { "128GB": 12850000, "256GB": 13850000, "512GB": 15450000, "1TB": 17999000 } }, badge: "Beacukai", image: "https://images.unsplash.com/photo-1665549564626-0e625042d29e?w=400&h=400&fit=crop&auto=format" },
-            { id: 6, name: "iPhone 15", category: "iphone", description: "iPhone 15 Dynamic Island, chip A16 Bionic, kamera 48MP, USB-C port", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["128GB", "256GB", "512GB"], prices: { "All Operator": { "128GB": 10499000, "256GB": 11299000, "512GB": 12799000 }, "Beacukai": { "128GB": 11499000, "256GB": 12299000, "512GB": 13799000 } }, badge: "Second iBox", image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop&auto=format" },
-            { id: 7, name: "iPhone 16", category: "iphone", description: "iPhone 16 chip A17 Pro, kamera advanced, desain baru, garansi resmi 1 tahun", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["128GB", "256GB", "512GB", "1TB"], prices: { "All Operator": { "128GB": 15499000, "256GB": 16999000, "512GB": 18999000, "1TB": 21999000 }, "Beacukai": { "128GB": 17499000, "256GB": 18999000, "512GB": 20999000, "1TB": 23999000 } }, badge: "NEW", image: "https://images.unsplash.com/photo-1725064844250-0271462b186c?w=400&h=400&fit=crop&auto=format" },
-            { id: 8, name: "iPad mini 6", category: "ipad", description: "iPad mini 6 chip A15 Bionic, layar Liquid Retina 8.3 inch, Touch ID, Apple Pencil 2", signalVariants: ["WiFi Only", "WiFi + Cellular"], storageVariants: ["64GB", "256GB"], prices: { "WiFi Only": { "64GB": 4999000, "256GB": 6299000 }, "WiFi + Cellular": { "64GB": 6499000, "256GB": 7799000 } }, badge: "WiFi Only", image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400&h=400&fit=crop&auto=format" }
+            { id: 1, name: "iPhone 11", category: "iphone", description: "iPhone 11 dengan kamera dual 12MP, chip A13 Bionic", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4799000, "128GB": 3999000, "256GB": 4499000 }, "Beacukai": { "64GB": 5299000, "128GB": 4499000, "256GB": 4999000 } }, badge: "Second iBox", image: "https://images.unsplash.com/photo-1573148195900-7845dcb9b557?w=400" },
+            { id: 2, name: "iPhone 12", category: "iphone", description: "iPhone 12 dengan desain flat edge, 5G ready", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4299000, "128GB": 4499000, "256GB": 4999000 }, "Beacukai": { "64GB": 4799000, "128GB": 4999000, "256GB": 5499000 } }, badge: "Inter", image: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400" },
+            { id: 3, name: "iPhone 13", category: "iphone", description: "iPhone 13 dengan chip A15 Bionic", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["128GB", "256GB", "512GB"], prices: { "All Operator": { "128GB": 5699000, "256GB": 6299000, "512GB": 7199000 }, "Beacukai": { "128GB": 6950000, "256GB": 7799000, "512GB": 8499000 } }, badge: "Inter", image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?w=400" }
         ];
 
         let products = [];
@@ -1404,54 +849,31 @@
                         hasSeeded = true;
                         seedDefaultProducts();
                     } else if (!snapshot.empty) {
-                        products = snapshot.docs
-                            .map(d => ({ firestoreId: d.id, ...d.data() }))
-                            .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+                        products = snapshot.docs.map(d => ({ firestoreId: d.id, ...d.data() }));
                         renderProducts();
                     }
                 }, (err) => {
                     console.error('Firestore error:', err);
                     products = JSON.parse(localStorage.getItem('gadgetProducts')) || DEFAULT_PRODUCTS;
                     renderProducts();
-                    showToast('⚠️ Menggunakan data lokal', 'error');
                 });
             }
 
-            if (window._firebaseReady) {
-                initFirebase();
-            } else {
-                document.addEventListener('firebaseReady', initFirebase);
-            }
-            
-            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const target = document.querySelector(this.getAttribute('href'));
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        document.querySelectorAll('.modal.active').forEach(modal => {
-                            modal.classList.remove('active');
-                            document.body.style.overflow = '';
-                        });
-                    }
-                });
-            });
-            
+            if (window._firebaseReady) initFirebase();
+            else document.addEventListener('firebaseReady', initFirebase);
+
             document.querySelectorAll('.modal').forEach(modal => {
-                modal.addEventListener('click', function(e) {
+                modal.addEventListener('click', e => {
                     if (e.target === modal) {
                         modal.classList.remove('active');
                         document.body.style.overflow = '';
                     }
                 });
             });
-            
-            document.addEventListener('keydown', function(e) {
+
+            document.addEventListener('keydown', e => {
                 if (e.key === 'Escape') {
-                    document.querySelectorAll('.modal.active').forEach(modal => {
-                        modal.classList.remove('active');
-                        document.body.style.overflow = '';
-                    });
+                    document.querySelectorAll('.modal.active').forEach(m => m.classList.remove('active'));
                 }
             });
 
@@ -1459,47 +881,18 @@
             const storInput = document.getElementById('newProductStorage');
             if (sigInput) sigInput.addEventListener('input', updateNewPriceGrid);
             if (storInput) storInput.addEventListener('input', updateNewPriceGrid);
-            
-            const delBtn = document.getElementById('confirmDeleteBtn');
-            if (delBtn) {
-                delBtn.onclick = async function() {
-                    if (deleteProductId && currentUser?.isAdmin) {
-                        const p = products.find(x => x.firestoreId === deleteProductId || x.id === deleteProductId);
-                        delBtn.disabled = true;
-                        delBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                        try {
-                            if (window._firebaseReady && p?.firestoreId) {
-                                await deleteProductFromFirestore(p.firestoreId, p.image);
-                                showToast('✅ Produk berhasil dihapus!');
-                            } else {
-                                products = products.filter(x => x.id !== deleteProductId);
-                                saveProducts(); 
-                                renderProducts(); 
-                                showToast('✅ Produk dihapus (lokal).');
-                            }
-                        } catch(err) {
-                            showToast('❌ Gagal hapus: ' + err.message, 'error');
-                        }
-                        delBtn.disabled = false;
-                        delBtn.innerHTML = 'Ya, Hapus';
-                        closeDeleteModal(); 
-                    }
-                };
-            }
         });
 
         function showLoadingProducts() {
-            const grid = document.getElementById('productsGrid');
-            if (!grid) return;
-            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:#888;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--primary-yellow);"></i><p style="margin-top:1rem;">Memuat produk...</p></div>';
+            document.getElementById('productsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;"><i class="fas fa-spinner fa-spin" style="font-size:2rem;color:var(--primary-yellow);"></i><p>Memuat produk...</p></div>';
         }
 
         function showToast(msg, type = 'success') {
             const toast = document.createElement('div');
-            toast.style.cssText = `position:fixed;bottom:2rem;right:2rem;z-index:9999;padding:1rem 1.5rem;border-radius:12px;font-weight:600;font-size:0.95rem;box-shadow:0 8px 25px rgba(0,0,0,0.2);animation:fadeInDown 0.3s ease;background:${type==='error'?'#dc3545':'#28a745'};color:white;max-width:300px;`;
+            toast.style.cssText = `position:fixed;bottom:2rem;right:2rem;z-index:9999;padding:1rem 1.5rem;border-radius:12px;font-weight:600;background:${type==='error'?'#dc3545':'#28a745'};color:white;box-shadow:0 8px 25px rgba(0,0,0,0.2);`;
             toast.textContent = msg;
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3500);
+            setTimeout(() => toast.remove(), 3000);
         }
 
         async function seedDefaultProducts() {
@@ -1509,9 +902,8 @@
                     const { id, ...data } = p;
                     await addDoc(collection(db, 'products'), { ...data, createdAt: Date.now() });
                 }
-                showToast('✅ Database diinisialisasi dengan 8 produk');
+                showToast('Database diinisialisasi');
             } catch(e) {
-                console.error('Seed gagal:', e);
                 products = DEFAULT_PRODUCTS;
                 renderProducts();
             }
@@ -1520,61 +912,36 @@
         async function saveProductToFirestore(productData) {
             const { db, collection, addDoc } = window._firebase;
             const { id, ...data } = productData;
-            const docRef = await addDoc(collection(db, 'products'), { ...data, createdAt: Date.now() });
-            return docRef.id;
+            return (await addDoc(collection(db, 'products'), { ...data, createdAt: Date.now() })).id;
         }
 
         async function updateProductInFirestore(firestoreId, productData) {
             const { db, doc, updateDoc } = window._firebase;
-            const { id, firestoreId: fid, ...data } = productData;
+            const { firestoreId: fid, id, ...data } = productData;
             await updateDoc(doc(db, 'products', firestoreId), data);
         }
 
-        async function deleteProductFromFirestore(firestoreId, imageUrl) {
-            const { db, doc, deleteDoc, storage, ref, deleteObject } = window._firebase;
+        async function deleteProductFromFirestore(firestoreId) {
+            const { db, doc, deleteDoc } = window._firebase;
             await deleteDoc(doc(db, 'products', firestoreId));
-            if (imageUrl && imageUrl.includes('firebasestorage.googleapis.com')) {
-                try {
-                    const imgRef = ref(storage, imageUrl);
-                    await deleteObject(imgRef);
-                } catch(e) { }
-            }
         }
 
-        // ============ KOMPRESI GAMBAR SEBELUM UPLOAD ============
-        function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+        function compressImage(file, maxWidth = 800, quality = 0.7) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = e => {
                     const img = new Image();
                     img.onload = function() {
                         let { width, height } = img;
-                        
-                        if (width > height) {
-                            if (width > maxWidth) {
-                                height = Math.round(height * (maxWidth / width));
-                                width = maxWidth;
-                            }
-                        } else {
-                            if (height > maxHeight) {
-                                width = Math.round(width * (maxHeight / height));
-                                height = maxHeight;
-                            }
+                        if (width > maxWidth) {
+                            height = Math.round(height * (maxWidth / width));
+                            width = maxWidth;
                         }
-                        
                         const canvas = document.createElement('canvas');
                         canvas.width = width;
                         canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        
-                        canvas.toBlob((blob) => {
-                            if (blob) {
-                                resolve(blob);
-                            } else {
-                                reject(new Error('Gagal mengompres gambar'));
-                            }
-                        }, 'image/jpeg', quality);
+                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+                        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Kompresi gagal')), 'image/jpeg', quality);
                     };
                     img.onerror = reject;
                     img.src = e.target.result;
@@ -1585,54 +952,34 @@
         }
 
         async function uploadImageToStorage(file, fileName) {
+            if (!window._firebaseReady) throw new Error('Firebase belum siap');
             const { storage, ref, uploadBytes, getDownloadURL } = window._firebase;
-            
-            const compressedFile = await compressImage(file, 800, 800, 0.7);
-            const fileNameClean = fileName.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.jpg';
-            const imgRef = ref(storage, `products/${Date.now()}_${fileNameClean}`);
-            
+            const compressedFile = await compressImage(file);
+            const imgRef = ref(storage, `products/${Date.now()}_${fileName.replace(/\s/g,'_')}.jpg`);
             await uploadBytes(imgRef, compressedFile);
             return await getDownloadURL(imgRef);
         }
 
-        function saveProducts() { 
-            try { localStorage.setItem('gadgetProducts', JSON.stringify(products)); } 
-            catch(e) { console.warn('Gagal menyimpan ke localStorage:', e); }
-        }
-        
         function formatRupiah(num) { return 'Rp ' + num.toLocaleString('id-ID'); }
 
         function checkExistingLogin() {
             try {
                 const saved = localStorage.getItem('currentUser');
                 if (saved) { currentUser = JSON.parse(saved); updateUIForLogin(); }
-            } catch(e) {
-                console.warn('Gagal memuat login:', e);
-                localStorage.removeItem('currentUser');
-            }
+            } catch(e) { localStorage.removeItem('currentUser'); }
         }
 
         function openLoginModal() { 
             document.getElementById('loginModal').classList.add('active'); 
-            document.body.style.overflow = 'hidden'; 
-            setTimeout(() => document.getElementById('loginName')?.focus(), 300);
         }
-        
         function closeLoginModal() { 
             document.getElementById('loginModal').classList.remove('active'); 
-            document.getElementById('loginForm')?.reset(); 
             document.getElementById('loginMessage').innerHTML = ''; 
-            document.body.style.overflow = ''; 
         }
         
         function switchLoginTab(type) {
-            document.querySelectorAll('.login-tab').forEach(t => { 
-                t.classList.remove('active');
-            });
-            const tabs = document.querySelectorAll('.login-tab');
-            const activeTab = type === 'customer' ? tabs[0] : tabs[1];
-            activeTab.classList.add('active');
-            
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
             document.getElementById('customerInfoBox').style.display = type === 'customer' ? 'block' : 'none';
             document.getElementById('adminInfoBox').style.display = type === 'admin' ? 'block' : 'none';
         }
@@ -1643,32 +990,23 @@
             const rawPhone = document.getElementById('loginPhone').value.trim();
             
             if (!name || !rawPhone) { 
-                showLoginMsg('Nama dan nomor WhatsApp harus diisi!', 'error'); 
+                document.getElementById('loginMessage').innerHTML = '<div class="error-msg">Nama dan nomor harus diisi!</div>'; 
                 return; 
             }
             
             let cleanPhone = rawPhone.replace(/[\s\-]/g, ''); 
-            if (cleanPhone.startsWith('62')) {
-                cleanPhone = '0' + cleanPhone.substring(2);
-            }
+            if (cleanPhone.startsWith('62')) cleanPhone = '0' + cleanPhone.substring(2);
 
-            if (name.toLowerCase() === ADMIN_NAME.toLowerCase() && cleanPhone === ADMIN_PHONE) { 
-                currentUser = { name: name, phone: rawPhone, isAdmin: true }; 
-            } else { 
-                currentUser = { name: name, phone: rawPhone, isAdmin: false }; 
-            }
+            currentUser = { 
+                name: name, 
+                phone: rawPhone, 
+                isAdmin: (name.toLowerCase() === ADMIN_NAME.toLowerCase() && cleanPhone === ADMIN_PHONE) 
+            };
             
-            try { localStorage.setItem('currentUser', JSON.stringify(currentUser)); } 
-            catch(e) { console.warn('Gagal menyimpan login:', e); }
-            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
             updateUIForLogin(); 
             closeLoginModal();
-            
-            if (currentUser.isAdmin) {
-                showToast('Selamat datang, Admin! Mode pengelola aktif.');
-            } else {
-                showToast('Selamat datang, ' + name + '!');
-            }
+            showToast(currentUser.isAdmin ? 'Selamat datang, Admin!' : 'Selamat datang, ' + name + '!');
         }
         
         function logout() { 
@@ -1682,30 +1020,19 @@
             document.getElementById('navLogin').style.display = currentUser ? 'none' : 'block';
             document.getElementById('navAdminBtn').style.display = (currentUser && currentUser.isAdmin) ? 'block' : 'none';
             document.getElementById('navUserInfo').style.display = currentUser ? 'block' : 'none';
-            
             if (currentUser) { 
-                document.getElementById('userNameDisplay').innerHTML = 
-                    currentUser.name + (currentUser.isAdmin ? ' <span class="admin-badge">ADMIN</span>' : ''); 
+                document.getElementById('userNameDisplay').innerHTML = currentUser.name + (currentUser.isAdmin ? ' <span class="admin-badge">ADMIN</span>' : ''); 
             }
             renderProducts();
-        }
-        
-        function showLoginMsg(msg, type) {
-            const el = document.getElementById('loginMessage');
-            if (!el) return;
-            el.innerHTML = '<div class="' + (type === 'error' ? 'error-msg' : 'success-msg') + '">' + msg + '</div>';
-            setTimeout(() => { el.innerHTML = ''; }, 3500);
         }
 
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
-            if (!grid) return;
-            
             grid.innerHTML = '';
             const filtered = currentFilter === 'all' ? products : products.filter(p => p.category === currentFilter);
             
             if (filtered.length === 0) {
-                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #666; font-size: 1.1rem;">Tidak ada produk dalam kategori ini.</p>';
+                grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 2rem;">Tidak ada produk.</p>';
                 return;
             }
             
@@ -1719,29 +1046,23 @@
             card.onclick = () => openProductDetail(cardId);
             
             const allPrices = [];
-            for (const sig in p.prices) { 
-                for (const stor in p.prices[sig]) { allPrices.push(p.prices[sig][stor]); } 
-            }
+            for (const sig in p.prices) for (const stor in p.prices[sig]) allPrices.push(p.prices[sig][stor]);
             const minPrice = allPrices.length > 0 ? Math.min(...allPrices) : 0;
             const canEdit = currentUser && currentUser.isAdmin;
             
             let html = '<div class="product-image-container">';
             if (p.badge) html += '<span class="product-badge">' + p.badge + '</span>';
-            
             html += '<div class="product-actions">';
             if (canEdit) {
-                html += '<button class="action-btn edit-btn visible" onclick="event.stopPropagation(); openEditModal(\'' + cardId + '\')" title="Edit"><i class="fas fa-edit"></i></button>';
-                html += '<button class="action-btn delete-btn visible" onclick="event.stopPropagation(); confirmDelete(\'' + cardId + '\')" title="Hapus"><i class="fas fa-trash"></i></button>';
+                html += '<button class="action-btn edit-btn visible" onclick="event.stopPropagation(); openEditModal(\'' + cardId + '\')"><i class="fas fa-edit"></i></button>';
+                html += '<button class="action-btn delete-btn visible" onclick="event.stopPropagation(); confirmDelete(\'' + cardId + '\')"><i class="fas fa-trash"></i></button>';
             }
             html += '</div>';
-            html += '<img src="' + p.image + '" class="product-image" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://via.placeholder.com/400x400?text=No+Image\'">';
-            html += '</div>';
-            
-            html += '<div class="product-info">';
+            html += '<img src="' + p.image + '" class="product-image" alt="' + p.name + '" onerror="this.src=\'https://via.placeholder.com/400?text=No+Image\'">';
+            html += '</div><div class="product-info">';
             html += '<h3 class="product-title">' + p.name + '</h3>';
             html += '<div class="product-price-preview">Mulai ' + formatRupiah(minPrice) + '</div>';
-            html += '<p class="click-hint"><i class="fas fa-hand-pointer"></i> Klik untuk detail & pesan</p>';
-            html += '</div>';
+            html += '<p class="click-hint"><i class="fas fa-hand-pointer"></i> Klik untuk detail</p></div>';
             
             card.innerHTML = html;
             return card;
@@ -1755,73 +1076,38 @@
         }
 
         function openProductDetail(id) {
-            selectedProduct = products.find(p => p.firestoreId === id || p.id === id || String(p.id) === String(id));
+            selectedProduct = products.find(p => p.firestoreId === id || p.id === id);
             if (!selectedProduct) return;
-            
             selectedSignal = selectedProduct.signalVariants[0];
             selectedStorage = selectedProduct.storageVariants[0];
-            
             document.getElementById('detailTitle').textContent = selectedProduct.name;
             renderProductDetail();
-            
             document.getElementById('productDetailModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
         
         function closeProductDetail() { 
             document.getElementById('productDetailModal').classList.remove('active'); 
             selectedProduct = null; 
-            document.body.style.overflow = ''; 
         }
 
         function renderProductDetail() {
             if (!selectedProduct) return;
-            
             const price = (selectedProduct.prices[selectedSignal]?.[selectedStorage]) || 0;
-            
-            const sigBtns = selectedProduct.signalVariants.map(s => 
-                `<button class="variant-btn${selectedSignal === s ? ' active' : ''}" onclick="selectSignal('${s}')">${s}</button>`
-            ).join('');
-            
-            const storBtns = selectedProduct.storageVariants.map(st => 
-                `<button class="variant-btn${selectedStorage === st ? ' active' : ''}" onclick="selectStorage('${st}')">${st}</button>`
-            ).join('');
+            const sigBtns = selectedProduct.signalVariants.map(s => `<button class="variant-btn${selectedSignal === s ? ' active' : ''}" onclick="selectSignal('${s}')">${s}</button>`).join('');
+            const storBtns = selectedProduct.storageVariants.map(st => `<button class="variant-btn${selectedStorage === st ? ' active' : ''}" onclick="selectStorage('${st}')">${st}</button>`).join('');
             
             let html = `<div class="product-detail-grid">
-                <div class="product-detail-image">
-                    <img src="${selectedProduct.image}" alt="${selectedProduct.name}" onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
-                </div>
+                <div class="product-detail-image"><img src="${selectedProduct.image}" alt="${selectedProduct.name}" onerror="this.src='https://via.placeholder.com/400?text=No+Image'"></div>
                 <div class="product-detail-info">
                     <h3>${selectedProduct.name}</h3>
                     <div class="product-detail-price">${formatRupiah(price)}</div>
-                    <div class="product-detail-description">
-                        <strong>Spesifikasi:</strong><br>
-                        ${selectedProduct.description.replace(/\n/g, '<br>')}
-                    </div>
-                    
-                    <div class="variant-section">
-                        <span class="variant-label">Varian Sinyal:</span>
-                        <div class="variant-options">${sigBtns}</div>
-                    </div>
-                    
-                    <div class="variant-section">
-                        <span class="variant-label">Varian Storage:</span>
-                        <div class="variant-options">${storBtns}</div>
-                    </div>
-                    
-                    ${selectedProduct.badge ? 
-                        `<div style="margin:0.9rem 0;padding:0.9rem;background:var(--light-yellow);border-radius:12px;border-left:4px solid var(--primary-yellow);">
-                            <strong>Kondisi:</strong> ${selectedProduct.badge}
-                        </div>` : ''}
-                    
-                    <div class="order-section">
-                        <button class="btn btn-primary" style="width:100%;" onclick="orderProduct()">
-                            <i class="fab fa-whatsapp"></i> Pesan Sekarang
-                        </button>
-                    </div>
+                    <p><strong>Spesifikasi:</strong><br>${selectedProduct.description}</p>
+                    <div class="variant-section"><span class="variant-label">Varian Sinyal:</span><div class="variant-options">${sigBtns}</div></div>
+                    <div class="variant-section"><span class="variant-label">Varian Storage:</span><div class="variant-options">${storBtns}</div></div>
+                    ${selectedProduct.badge ? `<p><strong>Kondisi:</strong> ${selectedProduct.badge}</p>` : ''}
+                    <button class="btn btn-primary" style="width:100%;margin-top:1rem;" onclick="orderProduct()"><i class="fab fa-whatsapp"></i> Pesan Sekarang</button>
                 </div>
             </div>`;
-            
             document.getElementById('productDetailContent').innerHTML = html;
         }
 
@@ -1830,49 +1116,25 @@
 
         function orderProduct() {
             if (!selectedProduct) return;
-            
             const price = (selectedProduct.prices[selectedSignal]?.[selectedStorage]) || 0;
-            let msg = `Halo Gadget Ganteng Store, saya ingin memesan:\n\n*${selectedProduct.name}*\n`;
-            msg += `Varian Sinyal: ${selectedSignal}\nStorage: ${selectedStorage}\nHarga: ${formatRupiah(price)}\n`;
-            
-            if (currentUser) { 
-                msg += `\nNama: ${currentUser.name}\nNo. WhatsApp: ${currentUser.phone}\n`; 
-            } else { 
-                closeProductDetail(); 
-                openLoginModal(); 
-                return; 
-            }
-            
-            const encodedMsg = encodeURIComponent(msg);
-            window.open(`https://wa.me/6285800302777?text=${encodedMsg}`, '_blank', 'noopener,noreferrer');
+            let msg = `Halo Gadget Ganteng Store, saya ingin memesan:\n\n*${selectedProduct.name}*\nVarian: ${selectedSignal} - ${selectedStorage}\nHarga: ${formatRupiah(price)}\n`;
+            if (currentUser) msg += `\nNama: ${currentUser.name}\nWA: ${currentUser.phone}\n`;
+            else { closeProductDetail(); openLoginModal(); return; }
+            window.open(`https://wa.me/6285800302777?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function buildPriceGrid(signals, storages, prices, prefix) {
-            if (!signals.length || !storages.length) {
-                return '<p style="padding:1rem;color:#666;text-align:center;">Tambah minimal 1 varian sinyal dan 1 varian storage</p>';
-            }
-            
+            if (!signals.length || !storages.length) return '<p style="padding:1rem;text-align:center;">Tambah varian dulu</p>';
             let html = '<div class="price-grid">';
-            
             signals.forEach((sig, i) => {
-                html += `<div class="price-row">
-                    <div class="price-row-header">${sig}</div>
-                    <div class="price-row-body">`;
-                
+                html += `<div class="price-row"><div class="price-row-header">${sig}</div><div class="price-row-body">`;
                 storages.forEach((stor, j) => {
                     const val = prices[sig]?.[stor] || '';
-                    const inputId = `${prefix}_p_${i}_${j}`;
-                    html += `<div class="price-cell">
-                        <div class="price-cell-header">${stor}</div>
-                        <input type="number" id="${inputId}" value="${val}" placeholder="0" min="0" data-signal="${sig}" data-storage="${stor}">
-                    </div>`;
+                    html += `<div class="price-cell"><div class="price-cell-header">${stor}</div><input type="number" id="${prefix}_p_${i}_${j}" value="${val}" min="0"></div>`;
                 });
-                
                 html += '</div></div>';
             });
-            
-            html += '</div>';
-            return html;
+            return html + '</div>';
         }
 
         function getPricesFromGrid(prefix, signals, storages) {
@@ -1880,93 +1142,60 @@
             signals.forEach((sig, i) => {
                 prices[sig] = {};
                 storages.forEach((stor, j) => {
-                    const input = document.getElementById(`${prefix}_p_${i}_${j}`);
-                    const val = parseInt(input?.value) || 0;
-                    prices[sig][stor] = val;
+                    prices[sig][stor] = parseInt(document.getElementById(`${prefix}_p_${i}_${j}`)?.value) || 0;
                 });
             });
             return prices;
         }
 
         function openEditModal(id) {
-            if (!currentUser?.isAdmin) { 
-                alert('Hanya admin yang dapat mengedit produk!'); 
-                return; 
-            }
-            
+            if (!currentUser?.isAdmin) return alert('Hanya admin!');
             const p = products.find(x => x.firestoreId === id || x.id === id);
             if (!p) return;
-            
             document.getElementById('editProductId').value = p.firestoreId || p.id;
             document.getElementById('editProductName').value = p.name;
             document.getElementById('editProductDesc').value = p.description;
             document.getElementById('editProductBadge').value = p.badge || '';
-            
             renderVariantEditor('signal', p.signalVariants);
             renderVariantEditor('storage', p.storageVariants);
-            document.getElementById('priceGridContainer').innerHTML = 
-                buildPriceGrid(p.signalVariants, p.storageVariants, p.prices, 'edit');
-            
+            document.getElementById('priceGridContainer').innerHTML = buildPriceGrid(p.signalVariants, p.storageVariants, p.prices, 'edit');
             document.getElementById('editImagePreview').style.display = 'none';
-            document.getElementById('editMessage').innerHTML = '';
             document.getElementById('editProductModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
         
         function closeEditModal() { 
             document.getElementById('editProductModal').classList.remove('active'); 
             editedFile = null; 
-            document.body.style.overflow = ''; 
         }
 
         function renderVariantEditor(type, variants) {
             const list = document.getElementById(type + 'List');
-            if (!list) return;
-            
-            list.innerHTML = variants.map((v, i) => 
-                `<div class="variant-tag">
-                    <input type="text" value="${v}" data-type="${type}" data-idx="${i}">
-                    <button type="button" class="remove-variant" onclick="removeVariant('${type}', ${i})">&times;</button>
-                </div>`
-            ).join('');
+            list.innerHTML = variants.map((v, i) => `<div class="variant-tag"><input type="text" value="${v}" data-idx="${i}"><button type="button" class="remove-variant" onclick="removeVariant('${type}', ${i})">&times;</button></div>`).join('');
         }
 
         function addVariant(type) {
             const list = document.getElementById(type + 'List');
-            if (!list) return;
-            
             const idx = list.children.length;
             const tag = document.createElement('div');
             tag.className = 'variant-tag';
-            tag.innerHTML = `<input type="text" value="Baru" data-type="${type}" data-idx="${idx}">
-                            <button type="button" class="remove-variant" onclick="removeVariant('${type}', ${idx})">&times;</button>`;
+            tag.innerHTML = `<input type="text" value="Baru" data-idx="${idx}"><button type="button" class="remove-variant" onclick="removeVariant('${type}', ${idx})">&times;</button>`;
             list.appendChild(tag);
             updatePriceGridFromVariants();
         }
 
         function removeVariant(type, idx) {
             const list = document.getElementById(type + 'List');
-            if (!list || list.children.length <= 1) { 
-                alert('Minimal 1 varian diperlukan'); 
-                return; 
-            }
+            if (list.children.length <= 1) return alert('Minimal 1 varian!');
             list.removeChild(list.children[idx]);
             updatePriceGridFromVariants();
         }
 
         function updatePriceGridFromVariants() {
-            const getValues = (selector) => 
-                Array.from(document.querySelectorAll(selector))
-                     .map(input => input.value.trim())
-                     .filter(v => v);
-            
-            const signals = getValues('#signalList input');
-            const storages = getValues('#storageList input');
-            
+            const getValues = sel => Array.from(document.querySelectorAll(sel + ' input')).map(i => i.value.trim()).filter(v => v);
+            const signals = getValues('#signalList');
+            const storages = getValues('#storageList');
             if (signals.length && storages.length) {
-                const currentPrices = getPricesFromGrid('edit', signals, storages);
-                document.getElementById('priceGridContainer').innerHTML = 
-                    buildPriceGrid(signals, storages, currentPrices, 'edit');
+                document.getElementById('priceGridContainer').innerHTML = buildPriceGrid(signals, storages, getPricesFromGrid('edit', signals, storages), 'edit');
             }
         }
 
@@ -1982,90 +1211,71 @@
         async function saveProductEdit(e) {
             e.preventDefault();
             if (!currentUser?.isAdmin) return;
-            
             const firestoreId = document.getElementById('editProductId').value;
             const p = products.find(x => x.firestoreId === firestoreId);
             if (!p) return;
 
             const btn = e.target.querySelector('[type=submit]');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah & Menyimpan...';
-            
-            p.name = document.getElementById('editProductName').value;
-            p.description = document.getElementById('editProductDesc').value;
-            p.badge = document.getElementById('editProductBadge').value;
-            p.signalVariants = Array.from(document.querySelectorAll('#signalList input')).map(i => i.value.trim()).filter(v => v);
-            p.storageVariants = Array.from(document.querySelectorAll('#storageList input')).map(i => i.value.trim()).filter(v => v);
-            p.prices = getPricesFromGrid('edit', p.signalVariants, p.storageVariants);
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
             
             try {
+                p.name = document.getElementById('editProductName').value;
+                p.description = document.getElementById('editProductDesc').value;
+                p.badge = document.getElementById('editProductBadge').value;
+                p.signalVariants = Array.from(document.querySelectorAll('#signalList input')).map(i => i.value.trim()).filter(v => v);
+                p.storageVariants = Array.from(document.querySelectorAll('#storageList input')).map(i => i.value.trim()).filter(v => v);
+                p.prices = getPricesFromGrid('edit', p.signalVariants, p.storageVariants);
+                
                 if (editedFile && window._firebaseReady) {
                     p.image = await uploadImageToStorage(editedFile, p.name);
-                } else if (editedFile) {
-                    p.image = URL.createObjectURL(editedFile);
                 }
                 
                 if (window._firebaseReady) {
                     await updateProductInFirestore(firestoreId, p);
-                    showToast('✅ Produk berhasil diupdate!');
+                    showToast('Produk diupdate!');
                 } else {
-                    saveProducts();
                     renderProducts();
-                    showToast('✅ Produk diupdate (lokal).');
+                    showToast('Produk diupdate (offline)');
                 }
             } catch(err) {
-                console.error(err);
-                showToast('❌ Gagal update: ' + err.message, 'error');
+                showToast('Gagal: ' + err.message, 'error');
             }
-
             btn.disabled = false;
-            btn.innerHTML = '<i class="fas fa-save"></i> Simpan Perubahan';
+            btn.innerHTML = 'Simpan';
             closeEditModal();
         }
 
         function initNewPriceGrid() {
-            const signals = ["All Operator", "Beacukai"];
-            const storages = ["128GB", "256GB", "512GB"];
-            document.getElementById('newPriceGridContainer').innerHTML = 
-                buildPriceGrid(signals, storages, {}, 'new');
+            document.getElementById('newPriceGridContainer').innerHTML = buildPriceGrid(["All Operator", "Beacukai"], ["128GB", "256GB", "512GB"], {}, 'new');
         }
 
         function openAddProductModal() {
             if (!currentUser?.isAdmin) return;
             initNewPriceGrid();
             document.getElementById('addProductModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-            setTimeout(() => document.getElementById('newProductName')?.focus(), 300);
         }
         
         function closeAddProductModal() {
             document.getElementById('addProductModal').classList.remove('active');
-            document.getElementById('addProductForm')?.reset();
+            document.getElementById('addProductForm').reset();
             document.getElementById('newImagePreview').style.display = 'none';
             document.getElementById('addMessage').innerHTML = '';
             initNewPriceGrid();
-            document.body.style.overflow = '';
         }
 
         function updateNewPriceGrid() {
-            const sigVal = document.getElementById('newProductSignal')?.value || '';
-            const storVal = document.getElementById('newProductStorage')?.value || '';
-            
-            const signals = sigVal.split(',').map(s => s.trim()).filter(s => s);
-            const storages = storVal.split(',').map(s => s.trim()).filter(s => s);
-            
+            const signals = (document.getElementById('newProductSignal').value || '').split(',').map(s => s.trim()).filter(s => s);
+            const storages = (document.getElementById('newProductStorage').value || '').split(',').map(s => s.trim()).filter(s => s);
             if (signals.length && storages.length) {
-                const currentPrices = getPricesFromGrid('new', signals, storages);
-                document.getElementById('newPriceGridContainer').innerHTML = 
-                    buildPriceGrid(signals, storages, currentPrices, 'new');
+                document.getElementById('newPriceGridContainer').innerHTML = buildPriceGrid(signals, storages, getPricesFromGrid('new', signals, storages), 'new');
             }
         }
 
         function previewNewImage(input) {
             if (input.files?.[0]) {
-                const file = input.files[0];
                 const preview = document.getElementById('newImagePreview');
-                preview.src = URL.createObjectURL(file);
+                preview.src = URL.createObjectURL(input.files[0]);
                 preview.style.display = 'block';
             }
         }
@@ -2074,10 +1284,9 @@
             e.preventDefault();
             if (!currentUser?.isAdmin) return;
             
-            const imageInput = document.getElementById('newProductImage');
-            const file = imageInput?.files?.[0];
+            const file = document.getElementById('newProductImage')?.files?.[0];
             if (!file) { 
-                document.getElementById('addMessage').innerHTML = '<div class="error-msg">📷 Foto produk wajib diupload!</div>'; 
+                document.getElementById('addMessage').innerHTML = '<div class="error-msg">Foto wajib!</div>'; 
                 return; 
             }
             
@@ -2085,13 +1294,13 @@
             const storages = (document.getElementById('newProductStorage').value || '').split(',').map(s => s.trim()).filter(s => s);
             
             if (!signals.length || !storages.length) { 
-                document.getElementById('addMessage').innerHTML = '<div class="error-msg">⚠️ Varian sinyal dan storage harus diisi!</div>'; 
+                document.getElementById('addMessage').innerHTML = '<div class="error-msg">Varian harus diisi!</div>'; 
                 return; 
             }
 
             const btn = e.target.querySelector('[type=submit]');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengompres & Mengunggah...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload...';
             
             try {
                 let imageUrl = '';
@@ -2104,7 +1313,6 @@
                 }
 
                 const newP = { 
-                    id: Date.now(),
                     name: productName, 
                     category: document.getElementById('newProductCategory').value, 
                     description: document.getElementById('newProductDesc').value, 
@@ -2112,26 +1320,24 @@
                     signalVariants: signals, 
                     storageVariants: storages, 
                     prices: getPricesFromGrid('new', signals, storages), 
-                    image: imageUrl
+                    image: imageUrl,
+                    createdAt: Date.now()
                 };
                 
                 if (window._firebaseReady) {
                     await saveProductToFirestore(newP);
-                    showToast('✅ Produk berhasil ditambahkan!');
+                    showToast('Produk ditambahkan!');
                 } else {
                     products.push(newP);
-                    saveProducts();
                     renderProducts();
-                    showToast('✅ Produk ditambahkan (lokal).');
+                    showToast('Produk ditambahkan (offline)');
                 }
-
                 closeAddProductModal();
             } catch(err) {
-                console.error(err);
-                document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal simpan: ' + err.message + '</div>';
+                document.getElementById('addMessage').innerHTML = '<div class="error-msg">Gagal: ' + err.message + '</div>';
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-plus"></i> Tambah Produk';
+                btn.innerHTML = 'Tambah Produk';
             }
         }
 
@@ -2139,25 +1345,33 @@
             if (!currentUser?.isAdmin) return;
             deleteProductId = id;
             const p = products.find(x => x.firestoreId === id || x.id === id);
-            document.getElementById('deleteConfirmText').textContent = 
-                `Hapus "${p?.name || 'produk ini'}"? Tindakan ini tidak dapat dibatalkan.`;
+            document.getElementById('deleteConfirmText').textContent = `Hapus "${p?.name}"?`;
             document.getElementById('deleteModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
         
         function closeDeleteModal() { 
             document.getElementById('deleteModal').classList.remove('active'); 
             deleteProductId = null;
-            document.body.style.overflow = ''; 
         }
 
-        let resizeTimer;
-        window.addEventListener('resize', () => {
-            clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(() => {
-                if (window.innerWidth < 768 && currentFilter) renderProducts();
-            }, 250);
-        });
+        document.getElementById('confirmDeleteBtn').onclick = async function() {
+            if (deleteProductId && currentUser?.isAdmin) {
+                const p = products.find(x => x.firestoreId === deleteProductId || x.id === deleteProductId);
+                try {
+                    if (window._firebaseReady && p?.firestoreId) {
+                        await deleteProductFromFirestore(p.firestoreId);
+                        showToast('Produk dihapus!');
+                    } else {
+                        products = products.filter(x => x.id !== deleteProductId);
+                        renderProducts();
+                        showToast('Produk dihapus (offline)');
+                    }
+                } catch(err) {
+                    showToast('Gagal hapus: ' + err.message, 'error');
+                }
+                closeDeleteModal(); 
+            }
+        };
     </script>
 </body>
 </html>
