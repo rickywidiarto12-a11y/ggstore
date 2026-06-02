@@ -13,7 +13,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
       import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-      import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+      import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
       // ======================================================
       // 🔥 GANTI KONFIGURASI INI DENGAN MILIK KAMU
@@ -1418,7 +1418,7 @@
         let selectedProduct = null;
         let selectedSignal = null;
         let selectedStorage = null;
-        let editedImage = null;
+        let editedFile = null; // Mengganti editedImage agar menyimpan File object, bukan Base64
         let deleteProductId = null;
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1427,8 +1427,13 @@
             showLoadingProducts();
 
             // Tunggu Firebase siap, lalu load produk dari Firestore
-            function initFirebase() {
-                const { db, collection, onSnapshot, query } = window._firebase;
+            async function uploadImageToStorage(file, fileName) {
+                const { storage, ref, uploadBytes, getDownloadURL } = window._firebase;
+                const imgRef = ref(storage, `products/${Date.now()}_${fileName}`);
+                // Upload file mentah jauh lebih cepat daripada uploadString base64
+                await uploadBytes(imgRef, file);
+                return await getDownloadURL(imgRef);
+            }
                 // Tanpa orderBy agar tidak butuh composite index di Firestore
                 const q = query(collection(db, 'products'));
                 // Real-time listener: produk otomatis update kalau ada perubahan
@@ -1986,15 +1991,11 @@
 
         function previewEditImage(input) {
             if (input.files?.[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) { 
-                    editedImage = e.target.result; 
-                    const preview = document.getElementById('editImagePreview');
-                    preview.src = editedImage; 
-                    preview.style.display = 'block';
-                    preview.alt = 'Preview gambar produk';
-                };
-                reader.readAsDataURL(input.files[0]);
+                editedFile = input.files[0]; // Simpan object filenya
+                const preview = document.getElementById('editImagePreview');
+                preview.src = URL.createObjectURL(editedFile); // Instan
+                preview.style.display = 'block';
+                preview.alt = 'Preview gambar produk';
             }
         }
 
@@ -2008,7 +2009,7 @@
 
             const btn = e.target.querySelector('[type=submit]');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah & Menyimpan...';
             
             p.name = document.getElementById('editProductName').value;
             p.description = document.getElementById('editProductDesc').value;
@@ -2018,10 +2019,10 @@
             p.prices = getPricesFromGrid('edit', p.signalVariants, p.storageVariants);
             
             try {
-                if (editedImage && window._firebaseReady) {
-                    p.image = await uploadImageToStorage(editedImage, p.name.replace(/\s/g,'_') + '.jpg');
-                } else if (editedImage) {
-                    p.image = editedImage;
+                if (editedFile && window._firebaseReady) {
+                    p.image = await uploadImageToStorage(editedFile, p.name.replace(/\s/g,'_') + '.jpg');
+                } else if (editedFile) {
+                    p.image = URL.createObjectURL(editedFile);
                 }
                 
                 if (window._firebaseReady) {
@@ -2117,80 +2118,79 @@
 
         function previewNewImage(input) {
             if (input.files?.[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) { 
-                    const preview = document.getElementById('newImagePreview');
-                    preview.src = e.target.result; 
-                    preview.style.display = 'block';
-                    preview.alt = 'Preview gambar produk baru';
-                };
-                reader.readAsDataURL(input.files[0]);
+                const file = input.files[0];
+                 const preview = document.getElementById('newImagePreview');
+                preview.src = URL.createObjectURL(file); // Instan, tanpa load memori berat
+                preview.style.display = 'block';
+                preview.alt = 'Preview gambar produk baru';
             }
         }
 
         async function addNewProduct(e) {
             e.preventDefault();
             if (!currentUser?.isAdmin) return;
-            
+    
             const imageInput = document.getElementById('newProductImage');
-            if (!imageInput?.files?.[0]) { 
+            const file = imageInput?.files?.[0];
+            if (!file) { 
                 document.getElementById('addMessage').innerHTML = '<div class="error-msg">📷 Foto produk wajib diupload!</div>'; 
                 return; 
             }
-            
+    
             const signals = (document.getElementById('newProductSignal').value || '').split(',').map(s => s.trim()).filter(s => s);
             const storages = (document.getElementById('newProductStorage').value || '').split(',').map(s => s.trim()).filter(s => s);
-            
+    
             if (!signals.length || !storages.length) { 
-                document.getElementById('addMessage').innerHTML = '<div class="error-msg">⚠️ Varian sinyal dan storage harus diisi!</div>'; 
-                return; 
+            document.getElementById('addMessage').innerHTML = '<div class="error-msg">⚠️ Varian sinyal dan storage harus diisi!</div>'; 
+            return; 
             }
 
             const btn = e.target.querySelector('[type=submit]');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
-            
-            const reader = new FileReader();
-            reader.onload = async function(ev) {
-                try {
-                    let imageUrl = ev.target.result;
-                    const productName = document.getElementById('newProductName').value;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah & Menyimpan...';
+    
+            try {
+                let imageUrl = '';
+                const productName = document.getElementById('newProductName').value;
 
-                    if (window._firebaseReady) {
-                        imageUrl = await uploadImageToStorage(ev.target.result, productName.replace(/\s/g,'_') + '.jpg');
-                    }
+            if (window._firebaseReady) {
+                // Upload file mentah langsung (SANGAT CEPAT)
+                imageUrl = await uploadImageToStorage(file, productName.replace(/\s/g,'_') + '.jpg');
+            } else {
+                imageUrl = URL.createObjectURL(file); // Fallback lokal
+            }
 
-                    const newP = { 
-                        id: Date.now(),
-                        name: productName, 
-                        category: document.getElementById('newProductCategory').value, 
-                        description: document.getElementById('newProductDesc').value, 
-                        badge: document.getElementById('newProductBadge').value, 
-                        signalVariants: signals, 
-                        storageVariants: storages, 
-                        prices: getPricesFromGrid('new', signals, storages), 
-                        image: imageUrl
-                    };
-                    
-                    if (window._firebaseReady) {
-                        await saveProductToFirestore(newP);
-                        showToast('✅ Produk berhasil ditambahkan!');
-                    } else {
-                        products.push(newP);
-                        saveProducts();
-                        renderProducts();
-                        showToast('✅ Produk ditambahkan (lokal).');
-                    }
-
-                    closeAddProductModal();
-                } catch(err) {
-                    console.error(err);
-                    document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal simpan: ' + err.message + '</div>';
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-plus"></i> Tambah Produk';
-                }
+            const newP = { 
+                id: Date.now(),
+                name: productName, 
+                category: document.getElementById('newProductCategory').value, 
+                description: document.getElementById('newProductDesc').value, 
+                badge: document.getElementById('newProductBadge').value, 
+                signalVariants: signals, 
+                storageVariants: storages, 
+                prices: getPricesFromGrid('new', signals, storages), 
+                image: imageUrl
             };
+        
+            if (window._firebaseReady) {
+                await saveProductToFirestore(newP);
+                showToast('✅ Produk berhasil ditambahkan!');
+            } else {
+                products.push(newP);
+                saveProducts();
+                renderProducts();
+                showToast('✅ Produk ditambahkan (lokal).');
+            }
+
+            closeAddProductModal();
+        } catch(err) {
+            console.error(err);
+            document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal simpan: ' + err.message + '</div>';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-plus"></i> Tambah Produk';
+        }
+    };
             reader.onerror = function() {
                 document.getElementById('addMessage').innerHTML = '<div class="error-msg">❌ Gagal membaca file gambar. Coba lagi.</div>';
                 btn.disabled = false;
