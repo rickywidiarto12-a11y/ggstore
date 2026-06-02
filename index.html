@@ -15,9 +15,6 @@
       import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
       import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
-      // ======================================================
-      // 🔥 KONFIGURASI FIREBASE
-      // ======================================================
       const firebaseConfig = {
         apiKey: "AIzaSyDBw-3cHKKISsCWZWU9jDQl6ysBEtLx2Js",
         authDomain: "ggstore-5011e.firebaseapp.com",
@@ -31,20 +28,17 @@
       const db = getFirestore(app);
       const storage = getStorage(app);
 
-      // Enable offline persistence
       try {
         await enableIndexedDbPersistence(db);
       } catch(e) {
         // Ignore
       }
 
-      // Expose ke window
       window._firebase = { db, storage, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, ref, uploadBytes, getDownloadURL, deleteObject };
       window._firebaseReady = true;
       document.dispatchEvent(new Event('firebaseReady'));
     </script>
     <style>
-        /* ============ RESET & BASE ============ */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
         *:focus { outline: 2px solid var(--primary-yellow); outline-offset: 2px; }
 
@@ -64,11 +58,7 @@
             --min-touch-target: 44px;
         }
 
-        html { 
-            scroll-behavior: smooth; 
-            font-size: clamp(14px, 2.5vw, 16px);
-            -webkit-text-size-adjust: 100%;
-        }
+        html { scroll-behavior: smooth; font-size: clamp(14px, 2.5vw, 16px); -webkit-text-size-adjust: 100%; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
@@ -83,7 +73,6 @@
             flex-direction: column;
         }
 
-        /* ============ HEADER ============ */
         header {
             background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--dark-yellow) 100%);
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
@@ -189,7 +178,6 @@
             margin-left: 0.3rem;
         }
 
-        /* ============ HERO ============ */
         .hero {
             background: linear-gradient(135deg, var(--primary-yellow) 0%, var(--dark-yellow) 100%);
             padding: clamp(2rem, 8vw, 5rem) clamp(1rem, 4vw, 3rem);
@@ -240,7 +228,6 @@
             animation: fadeInUp 1s ease 0.3s both;
         }
 
-        /* ============ BUTTONS ============ */
         .btn {
             padding: clamp(0.75rem, 2.2vw, 1.1rem) clamp(1.3rem, 3.5vw, 2.2rem);
             border: none;
@@ -266,7 +253,6 @@
         .btn-danger { background: var(--danger); color: white; }
         .btn-danger:hover { background: #c82333; }
 
-        /* ============ PRODUCTS SECTION ============ */
         .products-section {
             max-width: 1400px;
             margin: 0 auto;
@@ -324,7 +310,6 @@
             transform: translateY(-2px);
         }
 
-        /* ============ PRODUCTS GRID ============ */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
@@ -445,7 +430,6 @@
             padding-top: 0.3rem;
         }
 
-        /* ============ MODALS ============ */
         .modal {
             display: none;
             position: fixed;
@@ -518,7 +502,6 @@
 
         .close-modal:hover { color: var(--black); background: var(--light-yellow); transform: rotate(90deg); }
 
-        /* Product Detail Grid */
         .product-detail-grid {
             display: grid;
             grid-template-columns: 1fr 1.1fr;
@@ -601,7 +584,6 @@
             border-top: 2px solid #eee;
         }
 
-        /* ============ FORMS ============ */
         .form-group { margin-bottom: 1.1rem; }
 
         .form-group label {
@@ -649,7 +631,6 @@
 
         .image-upload:hover { background: #fff3cc; transform: translateY(-2px); }
 
-        /* ============ LOGIN ============ */
         .login-container { max-width: 500px; margin: 0 auto; }
 
         .login-tabs {
@@ -696,7 +677,6 @@
             border-left: 4px solid var(--primary-yellow);
         }
 
-        /* ============ PRICE GRID ============ */
         .price-grid {
             display: flex;
             flex-direction: column;
@@ -781,7 +761,6 @@
             border-left: 4px solid var(--primary-yellow);
         }
 
-        /* ============ VARIANT EDITOR ============ */
         .variant-editor {
             background: var(--light-yellow);
             padding: clamp(0.6rem, 1.8vw, 0.9rem);
@@ -861,7 +840,6 @@
 
         .add-variant-btn:hover { background: #218838; transform: translateY(-2px); }
 
-        /* ============ OUTLET ============ */
         .outlet-section {
             background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
             color: var(--white);
@@ -949,7 +927,6 @@
             background: var(--white);
         }
 
-        /* ============ FOOTER ============ */
         footer {
             background: var(--black);
             color: var(--white);
@@ -961,7 +938,6 @@
 
         footer p { color: #aaa; font-size: clamp(0.85rem, 2.3vw, 0.95rem); line-height: 1.5; }
 
-        /* ============ WHATSAPP FLOAT ============ */
         .whatsapp-float {
             position: fixed;
             bottom: clamp(18px, 3.5vw, 28px);
@@ -992,7 +968,6 @@
             50% { box-shadow: 0 6px 35px rgba(37,211,102,0.8); }
         }
 
-        /* ============ MESSAGES ============ */
         .success-msg { background: var(--success); color: white; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1rem; font-size: clamp(0.85rem, 2.2vw, 0.95rem); border-left: 4px solid rgba(255,255,255,0.5); }
         .error-msg { background: var(--danger); color: white; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1rem; font-size: clamp(0.85rem, 2.2vw, 0.95rem); border-left: 4px solid rgba(255,255,255,0.5); }
 
@@ -1009,12 +984,10 @@
         .confirm-dialog p { margin-bottom: 1.2rem; font-weight: 600; font-size: clamp(0.95rem, 2.6vw, 1.05rem); line-height: 1.5; }
         .confirm-buttons { display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap; }
 
-        /* ============ ANIMATIONS ============ */
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-25px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes modalSlideIn { from { opacity: 0; transform: scale(0.92) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        /* ============ RESPONSIVE BREAKPOINTS ============ */
         @media (min-width: 1400px) {
             .products-grid { grid-template-columns: repeat(4, 1fr); }
             .outlet-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1154,7 +1127,6 @@
         html, body { min-height: 100%; }
         .google-sites-wrapper { width: 100%; min-height: 100vh; }
 
-        /* ========== FIX: WHITE TEXT FOR PRODUCT DETAIL ========== */
         #productDetailContent .product-detail-info,
         #productDetailContent .product-detail-info h3,
         #productDetailContent .product-detail-description,
@@ -1255,25 +1227,25 @@
         <a href="https://wa.me/6285800302777" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Chat via WhatsApp"><i class="fab fa-whatsapp"></i></a>
 
         <!-- LOGIN MODAL -->
-        <div class="modal" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginModalTitle">
+        <div class="modal" id="loginModal">
             <div class="modal-content login-container">
                 <div class="modal-header">
-                    <h2 id="loginModalTitle"><i class="fas fa-user"></i> Login</h2>
-                    <button class="close-modal" onclick="closeLoginModal()" aria-label="Tutup modal">&times;</button>
+                    <h2><i class="fas fa-user"></i> Login</h2>
+                    <button class="close-modal" onclick="closeLoginModal()">&times;</button>
                 </div>
-                <div class="login-tabs" role="tablist">
-                    <div class="login-tab active" role="tab" aria-selected="true" onclick="switchLoginTab('customer')" tabindex="0"><i class="fas fa-user"></i> Customer</div>
-                    <div class="login-tab" role="tab" aria-selected="false" onclick="switchLoginTab('admin')" tabindex="0"><i class="fas fa-user-shield"></i> Admin</div>
+                <div class="login-tabs">
+                    <div class="login-tab active" onclick="switchLoginTab('customer')"><i class="fas fa-user"></i> Customer</div>
+                    <div class="login-tab" onclick="switchLoginTab('admin')"><i class="fas fa-user-shield"></i> Admin</div>
                 </div>
-                <div id="loginMessage" role="alert" aria-live="polite"></div>
+                <div id="loginMessage"></div>
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
                         <label for="loginName">Nama Lengkap <span style="color:red">*</span></label>
-                        <input type="text" id="loginName" name="loginName" required placeholder="Masukkan nama lengkap" autocomplete="name">
+                        <input type="text" id="loginName" required placeholder="Masukkan nama lengkap">
                     </div>
                     <div class="form-group">
                         <label for="loginPhone">Nomor WhatsApp <span style="color:red">*</span></label>
-                        <input type="tel" id="loginPhone" name="loginPhone" required placeholder="Masukkan nomor WhatsApp" autocomplete="tel" pattern="[0-9\s\+\-\(\)]*">
+                        <input type="tel" id="loginPhone" required placeholder="Masukkan nomor WhatsApp">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-sign-in-alt"></i> Login</button>
                 </form>
@@ -1283,34 +1255,34 @@
         </div>
 
         <!-- PRODUCT DETAIL MODAL -->
-        <div class="modal" id="productDetailModal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <div class="modal" id="productDetailModal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 id="detailTitle">Detail Produk</h2>
-                    <button class="close-modal" onclick="closeProductDetail()" aria-label="Tutup modal">&times;</button>
+                    <button class="close-modal" onclick="closeProductDetail()">&times;</button>
                 </div>
                 <div id="productDetailContent"></div>
             </div>
         </div>
 
         <!-- EDIT PRODUCT MODAL -->
-        <div class="modal" id="editProductModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <div class="modal" id="editProductModal">
             <div class="modal-content" style="max-width:850px;">
                 <div class="modal-header">
-                    <h2 id="editModalTitle"><i class="fas fa-edit"></i> Edit Produk</h2>
-                    <button class="close-modal" onclick="closeEditModal()" aria-label="Tutup modal">&times;</button>
+                    <h2><i class="fas fa-edit"></i> Edit Produk</h2>
+                    <button class="close-modal" onclick="closeEditModal()">&times;</button>
                 </div>
-                <div id="editMessage" role="alert" aria-live="polite"></div>
+                <div id="editMessage"></div>
                 <form id="editProductForm" onsubmit="saveProductEdit(event)">
                     <input type="hidden" id="editProductId">
-                    <div class="form-group"><label for="editProductName">Nama Produk</label><input type="text" id="editProductName" name="editProductName" required></div>
-                    <div class="form-group"><label for="editProductDesc">Deskripsi / Spesifikasi</label><textarea id="editProductDesc" name="editProductDesc" required></textarea></div>
-                    <div class="form-group"><label for="editProductBadge">Badge / Kondisi</label><input type="text" id="editProductBadge" name="editProductBadge" placeholder="Second iBox, Inter, dll"></div>
+                    <div class="form-group"><label for="editProductName">Nama Produk</label><input type="text" id="editProductName" required></div>
+                    <div class="form-group"><label for="editProductDesc">Deskripsi / Spesifikasi</label><textarea id="editProductDesc" required></textarea></div>
+                    <div class="form-group"><label for="editProductBadge">Badge / Kondisi</label><input type="text" id="editProductBadge" placeholder="Second iBox, Inter, dll"></div>
                     <div class="form-group">
                         <label>Varian Sinyal</label>
                         <div class="variant-editor">
                             <div class="variant-editor-header"><strong>Daftar Varian Sinyal</strong></div>
-                            <div class="variant-list" id="signalList" role="list"></div>
+                            <div class="variant-list" id="signalList"></div>
                             <button type="button" class="add-variant-btn" onclick="addVariant('signal')">+ Tambah</button>
                         </div>
                     </div>
@@ -1318,7 +1290,7 @@
                         <label>Varian Storage</label>
                         <div class="variant-editor">
                             <div class="variant-editor-header"><strong>Daftar Varian Storage</strong></div>
-                            <div class="variant-list" id="storageList" role="list"></div>
+                            <div class="variant-list" id="storageList"></div>
                             <button type="button" class="add-variant-btn" onclick="addVariant('storage')">+ Tambah</button>
                         </div>
                     </div>
@@ -1329,12 +1301,12 @@
                     </div>
                     <div class="form-group">
                         <label>Ganti Foto Produk</label>
-                        <div class="image-upload" onclick="document.getElementById('editProductImage').click()" role="button" tabindex="0">
+                        <div class="image-upload" onclick="document.getElementById('editProductImage').click()">
                             <i class="fas fa-camera" style="font-size:1.9rem;color:var(--primary-yellow);margin-bottom:0.5rem;"></i>
                             <p>Klik untuk upload foto</p>
-                            <input type="file" id="editProductImage" name="editProductImage" accept="image/*" style="display:none;" onchange="previewEditImage(this)" aria-label="Pilih gambar">
+                            <input type="file" id="editProductImage" accept="image/*" style="display:none;" onchange="previewEditImage(this)">
                         </div>
-                        <img id="editImagePreview" style="max-width:100%;margin-top:0.9rem;border-radius:12px;display:none;" alt="Preview gambar">
+                        <img id="editImagePreview" style="max-width:100%;margin-top:0.9rem;border-radius:12px;display:none;" alt="Preview">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-save"></i> Simpan Perubahan</button>
                 </form>
@@ -1342,26 +1314,26 @@
         </div>
 
         <!-- ADD PRODUCT MODAL -->
-        <div class="modal" id="addProductModal" role="dialog" aria-modal="true" aria-labelledby="addModalTitle">
+        <div class="modal" id="addProductModal">
             <div class="modal-content" style="max-width:850px;">
                 <div class="modal-header">
-                    <h2 id="addModalTitle"><i class="fas fa-plus"></i> Tambah Produk</h2>
-                    <button class="close-modal" onclick="closeAddProductModal()" aria-label="Tutup modal">&times;</button>
+                    <h2><i class="fas fa-plus"></i> Tambah Produk</h2>
+                    <button class="close-modal" onclick="closeAddProductModal()">&times;</button>
                 </div>
-                <div id="addMessage" role="alert" aria-live="polite"></div>
+                <div id="addMessage"></div>
                 <form id="addProductForm" onsubmit="addNewProduct(event)">
-                    <div class="form-group"><label for="newProductName">Nama Produk <span style="color:red">*</span></label><input type="text" id="newProductName" name="newProductName" required placeholder="Contoh: iPhone 13"></div>
+                    <div class="form-group"><label for="newProductName">Nama Produk <span style="color:red">*</span></label><input type="text" id="newProductName" required placeholder="Contoh: iPhone 13"></div>
                     <div class="form-group">
                         <label for="newProductCategory">Kategori <span style="color:red">*</span></label>
-                        <select id="newProductCategory" name="newProductCategory" required>
+                        <select id="newProductCategory" required>
                             <option value="iphone">iPhone</option>
                             <option value="ipad">iPad</option>
                         </select>
                     </div>
-                    <div class="form-group"><label for="newProductDesc">Deskripsi <span style="color:red">*</span></label><textarea id="newProductDesc" name="newProductDesc" required></textarea></div>
-                    <div class="form-group"><label for="newProductBadge">Badge / Kondisi</label><input type="text" id="newProductBadge" name="newProductBadge" placeholder="Second iBox, Inter, dll"></div>
-                    <div class="form-group"><label for="newProductSignal">Varian Sinyal (pisahkan koma)</label><input type="text" id="newProductSignal" name="newProductSignal" value="All Operator, Beacukai"></div>
-                    <div class="form-group"><label for="newProductStorage">Varian Storage (pisahkan koma) <span style="color:red">*</span></label><input type="text" id="newProductStorage" name="newProductStorage" value="128GB, 256GB, 512GB" required></div>
+                    <div class="form-group"><label for="newProductDesc">Deskripsi <span style="color:red">*</span></label><textarea id="newProductDesc" required></textarea></div>
+                    <div class="form-group"><label for="newProductBadge">Badge / Kondisi</label><input type="text" id="newProductBadge" placeholder="Second iBox, Inter, dll"></div>
+                    <div class="form-group"><label for="newProductSignal">Varian Sinyal (pisahkan koma)</label><input type="text" id="newProductSignal" value="All Operator, Beacukai"></div>
+                    <div class="form-group"><label for="newProductStorage">Varian Storage (pisahkan koma) <span style="color:red">*</span></label><input type="text" id="newProductStorage" value="128GB, 256GB, 512GB" required></div>
                     <div class="form-group">
                         <label>Harga (Rp) per Kombinasi <span style="color:red">*</span></label>
                         <div class="price-help"><i class="fas fa-info-circle"></i> Masukkan harga lengkap dalam Rupiah.</div>
@@ -1369,12 +1341,12 @@
                     </div>
                     <div class="form-group">
                         <label>Foto Produk <span style="color:red">*</span></label>
-                        <div class="image-upload" onclick="document.getElementById('newProductImage').click()" role="button" tabindex="0">
+                        <div class="image-upload" onclick="document.getElementById('newProductImage').click()">
                             <i class="fas fa-upload" style="font-size:1.9rem;color:var(--primary-yellow);margin-bottom:0.5rem;"></i>
                             <p>Klik untuk upload foto</p>
-                            <input type="file" id="newProductImage" name="newProductImage" accept="image/*" style="display:none;" required onchange="previewNewImage(this)" aria-label="Pilih gambar">
+                            <input type="file" id="newProductImage" accept="image/*" style="display:none;" required onchange="previewNewImage(this)">
                         </div>
-                        <img id="newImagePreview" style="max-width:100%;margin-top:0.9rem;border-radius:12px;display:none;" alt="Preview gambar">
+                        <img id="newImagePreview" style="max-width:100%;margin-top:0.9rem;border-radius:12px;display:none;" alt="Preview">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width:100%;"><i class="fas fa-plus"></i> Tambah Produk</button>
                 </form>
@@ -1382,9 +1354,9 @@
         </div>
 
         <!-- DELETE MODAL -->
-        <div class="modal" id="deleteModal" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="modal" id="deleteModal">
             <div class="modal-content confirm-dialog">
-                <h3 id="deleteModalTitle"><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i> Hapus Produk?</h3>
+                <h3><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i> Hapus Produk?</h3>
                 <p id="deleteConfirmText">Apakah Anda yakin?</p>
                 <div class="confirm-buttons">
                     <button class="btn" onclick="closeDeleteModal()">Batal</button>
@@ -1398,7 +1370,6 @@
         const ADMIN_NAME = "Admin";
         const ADMIN_PHONE = "085800302777";
 
-        // ============ DATA PRODUK DEFAULT ============
         const DEFAULT_PRODUCTS = [
             { id: 1, name: "iPhone 11", category: "iphone", description: "iPhone 11 dengan kamera dual 12MP, chip A13 Bionic, layar Liquid Retina 6.1 inch, Face ID, tahan air IP68", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4799000, "128GB": 3999000, "256GB": 4499000 }, "Beacukai": { "64GB": 5299000, "128GB": 4499000, "256GB": 4999000 } }, badge: "Second iBox", image: "https://images.unsplash.com/photo-1573148195900-7845dcb9b557?w=400&h=400&fit=crop&auto=format" },
             { id: 2, name: "iPhone 12", category: "iphone", description: "iPhone 12 dengan desain flat edge, 5G ready, chip A14 Bionic, kamera dual 12MP, layar Super Retina XDR 6.1 inch", signalVariants: ["All Operator", "Beacukai"], storageVariants: ["64GB", "128GB", "256GB"], prices: { "All Operator": { "64GB": 4299000, "128GB": 4499000, "256GB": 4999000 }, "Beacukai": { "64GB": 4799000, "128GB": 4999000, "256GB": 5499000 } }, badge: "Inter Allop", image: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?w=400&h=400&fit=crop&auto=format" },
@@ -1418,6 +1389,7 @@
         let selectedStorage = null;
         let editedFile = null;
         let deleteProductId = null;
+        let hasSeeded = false;
 
         document.addEventListener('DOMContentLoaded', function() {
             checkExistingLogin();
@@ -1428,9 +1400,10 @@
                 const { db, collection, onSnapshot, query } = window._firebase;
                 const q = query(collection(db, 'products'));
                 onSnapshot(q, (snapshot) => {
-                    if (snapshot.empty) {
+                    if (snapshot.empty && !hasSeeded) {
+                        hasSeeded = true;
                         seedDefaultProducts();
-                    } else {
+                    } else if (!snapshot.empty) {
                         products = snapshot.docs
                             .map(d => ({ firestoreId: d.id, ...d.data() }))
                             .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
@@ -1481,6 +1454,38 @@
                     });
                 }
             });
+
+            const sigInput = document.getElementById('newProductSignal');
+            const storInput = document.getElementById('newProductStorage');
+            if (sigInput) sigInput.addEventListener('input', updateNewPriceGrid);
+            if (storInput) storInput.addEventListener('input', updateNewPriceGrid);
+            
+            const delBtn = document.getElementById('confirmDeleteBtn');
+            if (delBtn) {
+                delBtn.onclick = async function() {
+                    if (deleteProductId && currentUser?.isAdmin) {
+                        const p = products.find(x => x.firestoreId === deleteProductId || x.id === deleteProductId);
+                        delBtn.disabled = true;
+                        delBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                        try {
+                            if (window._firebaseReady && p?.firestoreId) {
+                                await deleteProductFromFirestore(p.firestoreId, p.image);
+                                showToast('✅ Produk berhasil dihapus!');
+                            } else {
+                                products = products.filter(x => x.id !== deleteProductId);
+                                saveProducts(); 
+                                renderProducts(); 
+                                showToast('✅ Produk dihapus (lokal).');
+                            }
+                        } catch(err) {
+                            showToast('❌ Gagal hapus: ' + err.message, 'error');
+                        }
+                        delBtn.disabled = false;
+                        delBtn.innerHTML = 'Ya, Hapus';
+                        closeDeleteModal(); 
+                    }
+                };
+            }
         });
 
         function showLoadingProducts() {
@@ -1504,6 +1509,7 @@
                     const { id, ...data } = p;
                     await addDoc(collection(db, 'products'), { ...data, createdAt: Date.now() });
                 }
+                showToast('✅ Database diinisialisasi dengan 8 produk');
             } catch(e) {
                 console.error('Seed gagal:', e);
                 products = DEFAULT_PRODUCTS;
@@ -1520,7 +1526,7 @@
 
         async function updateProductInFirestore(firestoreId, productData) {
             const { db, doc, updateDoc } = window._firebase;
-            const { firestoreId: fid, id, ...data } = productData;
+            const { id, firestoreId: fid, ...data } = productData;
             await updateDoc(doc(db, 'products', firestoreId), data);
         }
 
@@ -1535,10 +1541,57 @@
             }
         }
 
+        // ============ KOMPRESI GAMBAR SEBELUM UPLOAD ============
+        function compressImage(file, maxWidth = 800, maxHeight = 800, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        let { width, height } = img;
+                        
+                        if (width > height) {
+                            if (width > maxWidth) {
+                                height = Math.round(height * (maxWidth / width));
+                                width = maxWidth;
+                            }
+                        } else {
+                            if (height > maxHeight) {
+                                width = Math.round(width * (maxHeight / height));
+                                height = maxHeight;
+                            }
+                        }
+                        
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        
+                        canvas.toBlob((blob) => {
+                            if (blob) {
+                                resolve(blob);
+                            } else {
+                                reject(new Error('Gagal mengompres gambar'));
+                            }
+                        }, 'image/jpeg', quality);
+                    };
+                    img.onerror = reject;
+                    img.src = e.target.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
         async function uploadImageToStorage(file, fileName) {
             const { storage, ref, uploadBytes, getDownloadURL } = window._firebase;
-            const imgRef = ref(storage, `products/${Date.now()}_${fileName}`);
-            await uploadBytes(imgRef, file);
+            
+            const compressedFile = await compressImage(file, 800, 800, 0.7);
+            const fileNameClean = fileName.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '') + '.jpg';
+            const imgRef = ref(storage, `products/${Date.now()}_${fileNameClean}`);
+            
+            await uploadBytes(imgRef, compressedFile);
             return await getDownloadURL(imgRef);
         }
 
@@ -1575,11 +1628,10 @@
         function switchLoginTab(type) {
             document.querySelectorAll('.login-tab').forEach(t => { 
                 t.classList.remove('active');
-                t.setAttribute('aria-selected', 'false');
             });
-            const activeTab = event.target.closest('.login-tab');
+            const tabs = document.querySelectorAll('.login-tab');
+            const activeTab = type === 'customer' ? tabs[0] : tabs[1];
             activeTab.classList.add('active');
-            activeTab.setAttribute('aria-selected', 'true');
             
             document.getElementById('customerInfoBox').style.display = type === 'customer' ? 'block' : 'none';
             document.getElementById('adminInfoBox').style.display = type === 'admin' ? 'block' : 'none';
@@ -1595,7 +1647,6 @@
                 return; 
             }
             
-            // Normalisasi nomor HP
             let cleanPhone = rawPhone.replace(/[\s\-]/g, ''); 
             if (cleanPhone.startsWith('62')) {
                 cleanPhone = '0' + cleanPhone.substring(2);
@@ -1614,9 +1665,9 @@
             closeLoginModal();
             
             if (currentUser.isAdmin) {
-                showLoginMsg('Selamat datang, Admin! Mode pengelola aktif.', 'success');
+                showToast('Selamat datang, Admin! Mode pengelola aktif.');
             } else {
-                showLoginMsg('Selamat datang, ' + name + '!', 'success');
+                showToast('Selamat datang, ' + name + '!');
             }
         }
         
@@ -1664,12 +1715,8 @@
         function createProductCard(p) {
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.setAttribute('role', 'button');
-            card.setAttribute('tabindex', '0');
-            card.setAttribute('aria-label', 'Lihat detail ' + p.name);
             const cardId = p.firestoreId || p.id;
             card.onclick = () => openProductDetail(cardId);
-            card.onkeypress = (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProductDetail(cardId); } };
             
             const allPrices = [];
             for (const sig in p.prices) { 
@@ -1683,8 +1730,8 @@
             
             html += '<div class="product-actions">';
             if (canEdit) {
-                html += '<button class="action-btn edit-btn visible" onclick="event.stopPropagation(); openEditModal(\'' + cardId + '\')" title="Edit produk" aria-label="Edit ' + p.name + '"><i class="fas fa-edit"></i></button>';
-                html += '<button class="action-btn delete-btn visible" onclick="event.stopPropagation(); confirmDelete(\'' + cardId + '\')" title="Hapus produk" aria-label="Hapus ' + p.name + '"><i class="fas fa-trash"></i></button>';
+                html += '<button class="action-btn edit-btn visible" onclick="event.stopPropagation(); openEditModal(\'' + cardId + '\')" title="Edit"><i class="fas fa-edit"></i></button>';
+                html += '<button class="action-btn delete-btn visible" onclick="event.stopPropagation(); confirmDelete(\'' + cardId + '\')" title="Hapus"><i class="fas fa-trash"></i></button>';
             }
             html += '</div>';
             html += '<img src="' + p.image + '" class="product-image" alt="' + p.name + '" loading="lazy" onerror="this.src=\'https://via.placeholder.com/400x400?text=No+Image\'">';
@@ -1704,19 +1751,7 @@
             currentFilter = cat;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
-            
-            const grid = document.getElementById('productsGrid');
-            if (!grid) return;
-            
-            grid.style.opacity = '0.7';
-            grid.style.transform = 'translateY(15px)';
-            grid.style.transition = 'opacity 0.3s, transform 0.3s';
-            
-            setTimeout(() => {
-                renderProducts();
-                grid.style.opacity = '1';
-                grid.style.transform = 'translateY(0)';
-            }, 250);
+            renderProducts();
         }
 
         function openProductDetail(id) {
@@ -1731,10 +1766,6 @@
             
             document.getElementById('productDetailModal').classList.add('active');
             document.body.style.overflow = 'hidden';
-            
-            setTimeout(() => {
-                document.querySelector('#productDetailModal .close-modal')?.focus();
-            }, 300);
         }
         
         function closeProductDetail() { 
@@ -1749,42 +1780,38 @@
             const price = (selectedProduct.prices[selectedSignal]?.[selectedStorage]) || 0;
             
             const sigBtns = selectedProduct.signalVariants.map(s => 
-                `<button class="variant-btn${selectedSignal === s ? ' active' : ''}" 
-                 onclick="selectSignal('${s}')" 
-                 aria-pressed="${selectedSignal === s}">${s}</button>`
+                `<button class="variant-btn${selectedSignal === s ? ' active' : ''}" onclick="selectSignal('${s}')">${s}</button>`
             ).join('');
             
             const storBtns = selectedProduct.storageVariants.map(st => 
-                `<button class="variant-btn${selectedStorage === st ? ' active' : ''}" 
-                 onclick="selectStorage('${st}')" 
-                 aria-pressed="${selectedStorage === st}">${st}</button>`
+                `<button class="variant-btn${selectedStorage === st ? ' active' : ''}" onclick="selectStorage('${st}')">${st}</button>`
             ).join('');
             
             let html = `<div class="product-detail-grid">
                 <div class="product-detail-image">
                     <img src="${selectedProduct.image}" alt="${selectedProduct.name}" onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
                 </div>
-                <div class="product-detail-info" style="color: #ffffff;">
-                    <h3 style="color: #ffffff;">${selectedProduct.name}</h3>
+                <div class="product-detail-info">
+                    <h3>${selectedProduct.name}</h3>
                     <div class="product-detail-price">${formatRupiah(price)}</div>
-                    <div class="product-detail-description" style="color: #ffffff; opacity: 0.95;">
-                        <strong style="color: var(--primary-yellow);">Spesifikasi:</strong><br>
+                    <div class="product-detail-description">
+                        <strong>Spesifikasi:</strong><br>
                         ${selectedProduct.description.replace(/\n/g, '<br>')}
                     </div>
                     
                     <div class="variant-section">
-                        <span class="variant-label" style="color: #ffffff;">Varian Sinyal:</span>
-                        <div class="variant-options" role="group" aria-label="Pilih varian sinyal">${sigBtns}</div>
+                        <span class="variant-label">Varian Sinyal:</span>
+                        <div class="variant-options">${sigBtns}</div>
                     </div>
                     
                     <div class="variant-section">
-                        <span class="variant-label" style="color: #ffffff;">Varian Storage:</span>
-                        <div class="variant-options" role="group" aria-label="Pilih varian storage">${storBtns}</div>
+                        <span class="variant-label">Varian Storage:</span>
+                        <div class="variant-options">${storBtns}</div>
                     </div>
                     
                     ${selectedProduct.badge ? 
-                        `<div style="margin:0.9rem 0;padding:0.9rem;background:rgba(255,215,0,0.15);border-radius:12px;border-left:4px solid var(--primary-yellow);">
-                            <strong style="color: var(--primary-yellow);">Kondisi:</strong> <span style="color: #ffffff;">${selectedProduct.badge}</span>
+                        `<div style="margin:0.9rem 0;padding:0.9rem;background:var(--light-yellow);border-radius:12px;border-left:4px solid var(--primary-yellow);">
+                            <strong>Kondisi:</strong> ${selectedProduct.badge}
                         </div>` : ''}
                     
                     <div class="order-section">
@@ -1825,27 +1852,19 @@
                 return '<p style="padding:1rem;color:#666;text-align:center;">Tambah minimal 1 varian sinyal dan 1 varian storage</p>';
             }
             
-            let html = '<div class="price-grid" role="table" aria-label="Tabel harga per kombinasi">';
+            let html = '<div class="price-grid">';
             
             signals.forEach((sig, i) => {
-                html += `<div class="price-row" role="row">
-                    <div class="price-row-header" role="columnheader">${sig}</div>
-                    <div class="price-row-body" role="rowgroup">`;
+                html += `<div class="price-row">
+                    <div class="price-row-header">${sig}</div>
+                    <div class="price-row-body">`;
                 
                 storages.forEach((stor, j) => {
                     const val = prices[sig]?.[stor] || '';
                     const inputId = `${prefix}_p_${i}_${j}`;
-                    html += `<div class="price-cell" role="cell">
+                    html += `<div class="price-cell">
                         <div class="price-cell-header">${stor}</div>
-                        <input type="number" 
-                               id="${inputId}" 
-                               name="${inputId}"
-                               value="${val}" 
-                               placeholder="0" 
-                               min="0" 
-                               data-signal="${sig}" 
-                               data-storage="${stor}"
-                               aria-label="Harga untuk ${sig} ${stor}">
+                        <input type="number" id="${inputId}" value="${val}" placeholder="0" min="0" data-signal="${sig}" data-storage="${stor}">
                     </div>`;
                 });
                 
@@ -1892,8 +1911,6 @@
             document.getElementById('editMessage').innerHTML = '';
             document.getElementById('editProductModal').classList.add('active');
             document.body.style.overflow = 'hidden';
-            
-            setTimeout(() => document.querySelector('#editProductModal .close-modal')?.focus(), 300);
         }
         
         function closeEditModal() { 
@@ -1907,16 +1924,9 @@
             if (!list) return;
             
             list.innerHTML = variants.map((v, i) => 
-                `<div class="variant-tag" role="listitem">
-                    <input type="text" 
-                           value="${v}" 
-                           data-type="${type}" 
-                           data-idx="${i}"
-                           aria-label="${type} varian ${i+1}">
-                    <button type="button" 
-                            class="remove-variant" 
-                            onclick="removeVariant('${type}', ${i})"
-                            aria-label="Hapus varian ${v}">&times;</button>
+                `<div class="variant-tag">
+                    <input type="text" value="${v}" data-type="${type}" data-idx="${i}">
+                    <button type="button" class="remove-variant" onclick="removeVariant('${type}', ${i})">&times;</button>
                 </div>`
             ).join('');
         }
@@ -1928,9 +1938,8 @@
             const idx = list.children.length;
             const tag = document.createElement('div');
             tag.className = 'variant-tag';
-            tag.setAttribute('role', 'listitem');
-            tag.innerHTML = `<input type="text" value="Baru" data-type="${type}" data-idx="${idx}" aria-label="${type} varian baru">
-                            <button type="button" class="remove-variant" onclick="removeVariant('${type}', ${idx})" aria-label="Hapus varian">&times;</button>`;
+            tag.innerHTML = `<input type="text" value="Baru" data-type="${type}" data-idx="${idx}">
+                            <button type="button" class="remove-variant" onclick="removeVariant('${type}', ${idx})">&times;</button>`;
             list.appendChild(tag);
             updatePriceGridFromVariants();
         }
@@ -1967,7 +1976,6 @@
                 const preview = document.getElementById('editImagePreview');
                 preview.src = URL.createObjectURL(editedFile);
                 preview.style.display = 'block';
-                preview.alt = 'Preview gambar produk';
             }
         }
 
@@ -1992,7 +2000,7 @@
             
             try {
                 if (editedFile && window._firebaseReady) {
-                    p.image = await uploadImageToStorage(editedFile, p.name.replace(/\s/g,'_') + '.jpg');
+                    p.image = await uploadImageToStorage(editedFile, p.name);
                 } else if (editedFile) {
                     p.image = URL.createObjectURL(editedFile);
                 }
@@ -2007,7 +2015,7 @@
                 }
             } catch(err) {
                 console.error(err);
-                showToast('❌ Gagal update produk: ' + err.message, 'error');
+                showToast('❌ Gagal update: ' + err.message, 'error');
             }
 
             btn.disabled = false;
@@ -2053,48 +2061,12 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const sigInput = document.getElementById('newProductSignal');
-            const storInput = document.getElementById('newProductStorage');
-            
-            if (sigInput) sigInput.addEventListener('input', updateNewPriceGrid);
-            if (storInput) storInput.addEventListener('input', updateNewPriceGrid);
-            
-            const delBtn = document.getElementById('confirmDeleteBtn');
-            if (delBtn) {
-                delBtn.onclick = async function() {
-                    if (deleteProductId && currentUser?.isAdmin) {
-                        const p = products.find(x => x.firestoreId === deleteProductId || x.id === deleteProductId);
-                        delBtn.disabled = true;
-                        delBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-                        try {
-                            if (window._firebaseReady && p?.firestoreId) {
-                                await deleteProductFromFirestore(p.firestoreId, p.image);
-                                showToast('✅ Produk berhasil dihapus!');
-                            } else {
-                                products = products.filter(x => x.id !== deleteProductId);
-                                saveProducts(); 
-                                renderProducts(); 
-                                showToast('✅ Produk dihapus (lokal).');
-                            }
-                        } catch(err) {
-                            showToast('❌ Gagal hapus: ' + err.message, 'error');
-                        }
-                        delBtn.disabled = false;
-                        delBtn.innerHTML = 'Ya, Hapus';
-                        closeDeleteModal(); 
-                    }
-                };
-            }
-        });
-
         function previewNewImage(input) {
             if (input.files?.[0]) {
                 const file = input.files[0];
                 const preview = document.getElementById('newImagePreview');
                 preview.src = URL.createObjectURL(file);
                 preview.style.display = 'block';
-                preview.alt = 'Preview gambar produk baru';
             }
         }
 
@@ -2119,14 +2091,14 @@
 
             const btn = e.target.querySelector('[type=submit]');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah & Menyimpan...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengompres & Mengunggah...';
             
             try {
                 let imageUrl = '';
                 const productName = document.getElementById('newProductName').value;
 
                 if (window._firebaseReady) {
-                    imageUrl = await uploadImageToStorage(file, productName.replace(/\s/g,'_') + '.jpg');
+                    imageUrl = await uploadImageToStorage(file, productName);
                 } else {
                     imageUrl = URL.createObjectURL(file);
                 }
@@ -2179,11 +2151,6 @@
             document.body.style.overflow = ''; 
         }
 
-        if ('loading' in HTMLImageElement.prototype) {
-            const images = document.querySelectorAll('img[loading="lazy"]');
-            images.forEach(img => { img.src = img.dataset.src || img.src; });
-        }
-
         let resizeTimer;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
@@ -2191,13 +2158,6 @@
                 if (window.innerWidth < 768 && currentFilter) renderProducts();
             }, 250);
         });
-
-        if (!Array.prototype.flat) {
-            Array.prototype.flat = function(depth = 1) {
-                return this.reduce((acc, val) => 
-                    acc.concat(Array.isArray(val) ? val.flat(depth - 1) : val), []);
-            };
-        }
     </script>
 </body>
 </html>
