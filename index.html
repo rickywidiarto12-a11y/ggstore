@@ -5,6 +5,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gadget Ganteng Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- ===== FIREBASE SDK ===== -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+      import { getStorage, ref, uploadString, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+      // ======================================================
+      // 🔥 GANTI KONFIGURASI INI DENGAN MILIK KAMU
+      // Ambil dari: Firebase Console → Project Settings → Your Apps
+      // ======================================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyDBw-3cHKKISsCWZWU9jDQl6ysBEtLx2Js",
+        authDomain: "ggstore-5011e.firebaseapp.com",
+        projectId: "ggstore-5011e",
+        storageBucket: "ggstore-5011e.firebasestorage.app",
+        messagingSenderId: "261039919883",
+        appId: "1:261039919883:web:899fdb16894dd5ad30880e"
+      };
+      // ======================================================
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Enable offline persistence (opsional, tapi membantu koneksi flaky)
+      try {
+        await enableIndexedDbPersistence(db);
+      } catch(e) {
+        // Ignore - persistence mungkin sudah aktif atau tidak didukung browser ini
+      }
+
+      // Expose ke window supaya bisa diakses dari script biasa di bawah
+      window._firebase = { db, storage, collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, ref, uploadString, getDownloadURL, deleteObject };
+      window._firebaseReady = true;
+      document.dispatchEvent(new Event('firebaseReady'));
+    </script>
 <style>
   :root {
     --gold: #FFD700;
