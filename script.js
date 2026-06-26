@@ -196,6 +196,12 @@
     return "badge--jenis-ibox";
   }
 
+  function jenisLabel(jenis) {
+    if (jenis === "Inter") return "Limited Provider";
+    if (jenis === "Bea Cukai") return "Resmi Terdaftar";
+    return jenis;
+  }
+
   function statusBadgeClass(status) {
     return status === "New" ? "badge--status-new" : "badge--status-second";
   }
@@ -209,7 +215,7 @@
       " (" +
       product.status +
       ", " +
-      product.jenis +
+      jenisLabel(product.jenis) +
       ") seharga " +
       formatRupiah(product.price) +
       ". Apakah masih tersedia?";
@@ -219,7 +225,7 @@
     card.innerHTML = `
       <div class="product-card__badges">
         <span class="badge ${statusBadgeClass(product.status)}">${product.status}</span>
-        <span class="badge ${jenisBadgeClass(product.jenis)}">${product.jenis}</span>
+        <span class="badge ${jenisBadgeClass(product.jenis)}">${jenisLabel(product.jenis)}</span>
       </div>
       <h3 class="product-card__name">${product.name}</h3>
       <div class="product-card__specs">
