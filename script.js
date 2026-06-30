@@ -177,48 +177,6 @@
     window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   });
 
-  /* ---------------- PROMO BANNER SLIDER ---------------- */
-  const promoTrack = document.getElementById("promoBannerTrack");
-  const promoDotsWrap = document.getElementById("promoBannerDots");
-
-  if (promoTrack && promoDotsWrap) {
-    const promoSlides = Array.from(promoTrack.querySelectorAll(".promo-banner__slide"));
-    let promoIndex = 0;
-    let promoTimer = null;
-
-    promoSlides.forEach((_, i) => {
-      const dot = document.createElement("button");
-      dot.type = "button";
-      dot.setAttribute("aria-label", `Promo ${i + 1}`);
-      if (i === 0) dot.classList.add("is-active");
-      dot.addEventListener("click", () => goToPromoSlide(i, true));
-      promoDotsWrap.appendChild(dot);
-    });
-    const promoDots = Array.from(promoDotsWrap.children);
-
-    function goToPromoSlide(i, manual) {
-      promoSlides[promoIndex].classList.remove("is-active");
-      promoDots[promoIndex].classList.remove("is-active");
-      promoIndex = i;
-      promoSlides[promoIndex].classList.add("is-active");
-      promoDots[promoIndex].classList.add("is-active");
-      if (manual) restartPromoTimer();
-    }
-
-    function nextPromoSlide() {
-      goToPromoSlide((promoIndex + 1) % promoSlides.length, false);
-    }
-
-    function restartPromoTimer() {
-      clearInterval(promoTimer);
-      if (promoSlides.length > 1 && !prefersReducedMotion) {
-        promoTimer = setInterval(nextPromoSlide, 4500);
-      }
-    }
-
-    if (promoSlides.length > 1) restartPromoTimer();
-  }
-
   /* ---------------- FOOTER YEAR ---------------- */
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
