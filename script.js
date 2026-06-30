@@ -188,11 +188,25 @@
   const searchInput = document.getElementById("searchInput");
   const filterGroups = document.querySelectorAll(".filter-pills");
 
-  // PRODUCTS dimulai dari data cadangan (products.js) supaya katalog tidak
-  // kosong saat Firestore masih loading. Begitu data live dari Firestore
-  // datang, catalog-live.js akan memanggil window.GG_setProducts(list)
-  // untuk menimpa data ini lalu render ulang.
-  let PRODUCTS = (window.DEFAULT_PRODUCTS || []).slice();
+  const STORAGE_ORDER = ["64GB", "128GB", "256GB", "512GB", "1TB"];
+
+  function groupFlatProducts(flatList) {
+    const map = new Map();
+    flatList.forEach((p) => {
+      if (!map.has(p.name)) {
+        map.set(p.name, { id: p.name, name: p.name, color: "", note: "", variants: [] });
+      }
+      map.get(p.name).variants.push({ status: p.status, jenis: p.jenis, storage: p.storage, price: p.price });
+    });
+    return Array.from(map.values());
+  }
+
+  // PRODUCTS dimulai dari data cadangan (products.js, dikelompokkan per nama)
+  // supaya katalog tidak kosong saat Firestore masih loading. Begitu data
+  // live dari Firestore datang, catalog-live.js akan memanggil
+  // window.GG_setProducts(list) dengan format yang sama (array produk,
+  // masing-masing punya array `variants`) untuk menimpa lalu render ulang.
+  let PRODUCTS = groupFlatProducts(window.DEFAULT_PRODUCTS || []);
 
   const activeFilters = { status: "all", storage: "all", jenis: "all", search: "" };
 
@@ -200,6 +214,12 @@
     if (jenis === "Inter") return "badge--jenis-inter";
     if (jenis === "Bea Cukai") return "badge--jenis-beacukai";
     return "badge--jenis-ibox";
+  }
+
+  function jenisPillClass(jenis) {
+    if (jenis === "Inter") return "variant-pill--jenis-inter";
+    if (jenis === "Bea Cukai") return "variant-pill--jenis-beacukai";
+    return "variant-pill--jenis-ibox";
   }
 
   function jenisLabel(jenis) {
@@ -212,40 +232,127 @@
     return status === "New" ? "badge--status-new" : "badge--status-second";
   }
 
-  function buildCard(product) {
-    const message =
-      "Halo Gadget Ganteng, saya tertarik dengan " +
-      product.name +
-      " " +
-      product.storage +
-      " (" +
-      product.status +
-      ", " +
-      jenisLabel(product.jenis) +
-      ") seharga " +
-      formatRupiah(product.price) +
-      ". Apakah masih tersedia?";
+  function uniqueOrdered(values, order) {
+    const list = Array.from(new Set(values));
+    if (!order) return list;
+    return list.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+  }
+
+  // Cari varian yang paling cocok dengan kombinasi jenis+storage yang
+  // diklik user. Kalau kombinasi persis tidak ada, jatuh balik ke storage
+  // yang sama (jenis apapun), lalu jenis yang sama (storage apapun).
+  function pickVariant(product, jenis, storage) {
+    const variants = product.variants || [];
+    let v = variants.find((x) => x.jenis === jenis && x.storage === storage);
+    if (v) return v;
+    v = variants.find((x) => x.storage === storage);
+    if (v) return v;
+    v = variants.find((x) => x.jenis === jenis);
+    if (v) return v;
+    return variants[0];
+  }
+
+  function initialVariant(product, filters) {
+    const variants = product.variants || [];
+    const match = variants.find(
+      (v) =>
+        (filters.status === "all" || v.status === filters.status) &&
+        (filters.storage === "all" || v.storage === filters.storage) &&
+        (filters.jenis === "all" || v.jenis === filters.jenis)
+    );
+    return match || variants[0];
+  }
+
+  function buildCard(product, filters) {
+    const variants = product.variants || [];
+    if (!variants.length) return document.createDocumentFragment();
+
+    const storages = uniqueOrdered(variants.map((v) => v.storage), STORAGE_ORDER);
+    const jenisList = uniqueOrdered(variants.map((v) => v.jenis));
+    const fullName = product.name + (product.color ? " " + product.color : "");
+
+    let selected = initialVariant(product, filters || { status: "all", storage: "all", jenis: "all" });
 
     const card = document.createElement("article");
     card.className = "product-card reveal is-visible";
     card.innerHTML = `
       <div class="product-card__badges">
-        <span class="badge ${statusBadgeClass(product.status)}">${product.status}</span>
-        <span class="badge ${jenisBadgeClass(product.jenis)}">${jenisLabel(product.jenis)}</span>
+        <span class="badge" data-role="status-badge"></span>
       </div>
-      <h3 class="product-card__name">${product.name}</h3>
-      <div class="product-card__specs">
-        <span class="spec">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
-          ${product.storage}
-        </span>
-      </div>
-      <div class="product-card__price">${formatRupiah(product.price)}</div>
-      <a class="btn btn--primary btn--block" href="${waLink(message)}" target="_blank" rel="noopener">
+      <h3 class="product-card__name">${fullName}</h3>
+      ${product.note ? `<p class="product-card__note">${product.note}</p>` : ""}
+      ${
+        jenisList.length
+          ? `<div class="variant-section">
+        <span class="variant-label">Jenis</span>
+        <div class="variant-options">
+          ${jenisList
+            .map((j) => `<button type="button" class="variant-pill ${jenisPillClass(j)}" data-jenis="${j}">${jenisLabel(j)}</button>`)
+            .join("")}
+        </div>
+      </div>`
+          : ""
+      }
+      ${
+        storages.length
+          ? `<div class="variant-section">
+        <span class="variant-label">Storage</span>
+        <div class="variant-options">
+          ${storages
+            .map((s) => `<button type="button" class="variant-pill variant-pill--storage" data-storage="${s}">${s}</button>`)
+            .join("")}
+        </div>
+      </div>`
+          : ""
+      }
+      <div class="product-card__price" data-role="price"></div>
+      <a class="btn btn--primary btn--block" data-role="wa-btn" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.9-.4-1.9-1-2.7-1.9-.7-.7-1.2-1.5-1.5-2.1-.1-.2 0-.4.1-.5.2-.2.4-.5.6-.7.2-.2.2-.4.1-.6-.1-.2-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-.9 2.4.1 1.4 1 2.8 1.1 3 .1.2 1.6 2.6 4 3.6 2.3 1 2.3.7 2.7.6.4 0 1.3-.5 1.5-1 .2-.5.2-.9.1-1-.1-.1-.2-.2-.4-.2zM12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.5 5.2L2 22l4.9-1.5C8.4 21.5 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.1.9.9-3-.2-.3C3.7 14.8 3.2 13.4 3.2 12c0-4.8 3.9-8.7 8.7-8.7 4.8 0 8.7 3.9 8.7 8.7 0 4.8-3.9 8.7-8.6 8.7z"/></svg>
         Chat WhatsApp
       </a>
     `;
+
+    const statusBadge = card.querySelector('[data-role="status-badge"]');
+    const priceEl = card.querySelector('[data-role="price"]');
+    const waBtn = card.querySelector('[data-role="wa-btn"]');
+    const jenisBtns = card.querySelectorAll("[data-jenis]");
+    const storageBtns = card.querySelectorAll("[data-storage]");
+
+    function update() {
+      statusBadge.textContent = selected.status;
+      statusBadge.className = "badge " + statusBadgeClass(selected.status);
+      priceEl.textContent = formatRupiah(selected.price);
+      jenisBtns.forEach((b) => b.classList.toggle("is-selected", b.dataset.jenis === selected.jenis));
+      storageBtns.forEach((b) => b.classList.toggle("is-selected", b.dataset.storage === selected.storage));
+      const message =
+        "Halo Gadget Ganteng, saya tertarik dengan " +
+        fullName +
+        " " +
+        selected.storage +
+        " (" +
+        selected.status +
+        ", " +
+        jenisLabel(selected.jenis) +
+        ") seharga " +
+        formatRupiah(selected.price) +
+        ". Apakah masih tersedia?";
+      waBtn.href = waLink(message);
+    }
+
+    jenisBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selected = pickVariant(product, btn.dataset.jenis, selected.storage);
+        update();
+      });
+    });
+    storageBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        selected = pickVariant(product, selected.jenis, btn.dataset.storage);
+        update();
+      });
+    });
+
+    update();
     return card;
   }
 
@@ -253,15 +360,18 @@
     const term = activeFilters.search.trim().toLowerCase();
 
     const filtered = PRODUCTS.filter((product) => {
-      const matchStatus = activeFilters.status === "all" || product.status === activeFilters.status;
-      const matchStorage = activeFilters.storage === "all" || product.storage === activeFilters.storage;
-      const matchJenis = activeFilters.jenis === "all" || product.jenis === activeFilters.jenis;
       const matchSearch = !term || product.name.toLowerCase().includes(term);
-      return matchStatus && matchStorage && matchJenis && matchSearch;
+      if (!matchSearch) return false;
+      return (product.variants || []).some((v) => {
+        const matchStatus = activeFilters.status === "all" || v.status === activeFilters.status;
+        const matchStorage = activeFilters.storage === "all" || v.storage === activeFilters.storage;
+        const matchJenis = activeFilters.jenis === "all" || v.jenis === activeFilters.jenis;
+        return matchStatus && matchStorage && matchJenis;
+      });
     });
 
     catalogGrid.innerHTML = "";
-    filtered.forEach((product) => catalogGrid.appendChild(buildCard(product)));
+    filtered.forEach((product) => catalogGrid.appendChild(buildCard(product, activeFilters)));
 
     catalogCount.textContent = `Menampilkan ${filtered.length} dari ${PRODUCTS.length} produk`;
     catalogEmpty.classList.toggle("hidden", filtered.length !== 0);
@@ -292,6 +402,9 @@
   renderCatalog();
 
   // ===== EXPOSE: jembatan ke catalog-live.js (Firestore) =====
+  // list yang dikirim ke sini harus berbentuk array produk yang masing-
+  // masing punya field `variants` (array {status,jenis,storage,price}) —
+  // persis format dokumen Firestore di koleksi "products".
   window.GG_renderCatalog = renderCatalog;
   window.GG_setProducts = function (list) {
     PRODUCTS = Array.isArray(list) ? list : [];

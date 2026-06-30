@@ -68,6 +68,55 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ===== VARIANT PILLS (kartu produk: pilih jenis & storage) ===== */
+.product-card__note {
+  font-size: 0.78rem;
+  color: #777;
+  margin-top: -4px;
+  margin-bottom: 4px;
+}
+.variant-section { margin: 12px 0; }
+.variant-label {
+  display: block;
+  font-size: 0.66rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  font-weight: 700;
+}
+.variant-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.variant-pill {
+  cursor: pointer;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: rgba(255,255,255,0.03);
+  color: #888;
+  opacity: 0.65;
+  transition: all 0.18s ease;
+  font-family: 'Inter', sans-serif;
+}
+.variant-pill:hover { opacity: 1; border-color: rgba(255,255,255,0.3); }
+.variant-pill.is-selected { opacity: 1; }
+.variant-pill--storage.is-selected {
+  border-color: #FFD400;
+  color: #FFD400;
+  background: rgba(255,212,0,0.08);
+}
+.variant-pill--jenis-inter { color: #c084fc; }
+.variant-pill--jenis-inter.is-selected { border-color: #c084fc; background: rgba(192,132,252,0.1); }
+.variant-pill--jenis-beacukai { color: #fb923c; }
+.variant-pill--jenis-beacukai.is-selected { border-color: #fb923c; background: rgba(251,146,60,0.1); }
+.variant-pill--jenis-ibox { color: #FFD400; }
+.variant-pill--jenis-ibox.is-selected { border-color: #FFD400; background: rgba(255,212,0,0.1); }
 </style>
 
 <script type="application/ld+json">
