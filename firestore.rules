@@ -1,0 +1,26 @@
+rules_version = '2';
+
+// =========================================================
+// FIRESTORE SECURITY RULES — GADGET GANTENG
+// =========================================================
+// Cara pasang:
+// 1. Buka Firebase Console -> Firestore Database -> Rules
+// 2. Hapus isi yang ada, ganti dengan isi file ini
+// 3. Klik "Publish"
+//
+// Logic:
+// - SIAPA SAJA boleh BACA produk (supaya katalog tampil ke
+//   semua pengunjung situs tanpa perlu login).
+// - HANYA user yang sudah login (Firebase Auth) yang boleh
+//   menulis (tambah/edit/hapus) produk. Karena cuma 1 akun
+//   admin yang akan dibuat di Firebase Auth, ini cukup aman.
+// =========================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}

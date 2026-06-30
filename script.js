@@ -5,15 +5,11 @@
 (function () {
   "use strict";
 
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const WA_NUMBER = "6285800302777";
 
   function waLink(message) {
-    return (
-      "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(message)
-    );
+    return "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(message);
   }
 
   function formatRupiah(value) {
@@ -37,6 +33,7 @@
     else window.addEventListener("load", resolve, { once: true });
   });
   Promise.all([minLoadTime, windowLoaded]).then(hideLoadingScreen);
+  // Safety net in case something blocks load
   setTimeout(hideLoadingScreen, 4000);
 
   /* ---------------- NAVBAR ---------------- */
@@ -77,7 +74,7 @@
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
     revealEls.forEach((el) => revealObserver.observe(el));
   } else {
@@ -101,8 +98,7 @@
       if (progress < 1) requestAnimationFrame(tick);
       else el.textContent = target.toFixed(decimals) + suffix;
     }
-    if (prefersReducedMotion)
-      el.textContent = target.toFixed(decimals) + suffix;
+    if (prefersReducedMotion) el.textContent = target.toFixed(decimals) + suffix;
     else requestAnimationFrame(tick);
   }
 
@@ -116,7 +112,7 @@
           }
         });
       },
-      { threshold: 0.5 },
+      { threshold: 0.5 }
     );
     counters.forEach((el) => counterObserver.observe(el));
   } else {
@@ -156,9 +152,7 @@
 
       faqItems.forEach((other) => {
         other.classList.remove("is-open");
-        other
-          .querySelector(".faq-item__q")
-          .setAttribute("aria-expanded", "false");
+        other.querySelector(".faq-item__q").setAttribute("aria-expanded", "false");
         other.querySelector(".faq-item__a").style.maxHeight = null;
       });
 
@@ -177,258 +171,108 @@
     () => {
       backToTop.classList.toggle("is-visible", window.scrollY > 500);
     },
-    { passive: true },
+    { passive: true }
   );
   backToTop.addEventListener("click", () => {
-    window.scrollTo({
-      top: 0,
-      behavior: prefersReducedMotion ? "auto" : "smooth",
-    });
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
   });
 
   /* ---------------- FOOTER YEAR ---------------- */
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-  /* ================================================================
-     CATALOG: GROUP BY SERIES — INTERACTIVE STORAGE & JENIS SELECTOR
-  ================================================================ */
+  /* ---------------- CATALOG: RENDER, FILTER, SEARCH ---------------- */
   const catalogGrid = document.getElementById("catalogGrid");
   const catalogCount = document.getElementById("catalogCount");
   const catalogEmpty = document.getElementById("catalogEmpty");
   const searchInput = document.getElementById("searchInput");
   const filterGroups = document.querySelectorAll(".filter-pills");
 
-  // Label mapping
+  // PRODUCTS dimulai dari data cadangan (products.js) supaya katalog tidak
+  // kosong saat Firestore masih loading. Begitu data live dari Firestore
+  // datang, catalog-live.js akan memanggil window.GG_setProducts(list)
+  // untuk menimpa data ini lalu render ulang.
+  let PRODUCTS = (window.DEFAULT_PRODUCTS || []).slice();
+
+  const activeFilters = { status: "all", storage: "all", jenis: "all", search: "" };
+
+  function jenisBadgeClass(jenis) {
+    if (jenis === "Inter") return "badge--jenis-inter";
+    if (jenis === "Bea Cukai") return "badge--jenis-beacukai";
+    return "badge--jenis-ibox";
+  }
+
   function jenisLabel(jenis) {
     if (jenis === "Inter") return "Limited Provider";
     if (jenis === "Bea Cukai") return "Resmi Terdaftar";
-    return jenis; // iBox
-  }
-  function jenisKey(jenis) {
-    // normalize for filter matching
     return jenis;
   }
 
-  // Build a key for grouping: same name = same series
-  function seriesKey(product) {
-    return product.name;
+  function statusBadgeClass(status) {
+    return status === "New" ? "badge--status-new" : "badge--status-second";
   }
 
-  // Group PRODUCTS by series name
-  function groupProducts(list) {
-    const map = new Map();
-    list.forEach((p) => {
-      const key = seriesKey(p);
-      if (!map.has(key)) map.set(key, []);
-      map.get(key).push(p);
-    });
-    return map;
-  }
+  function buildCard(product) {
+    const message =
+      "Halo Gadget Ganteng, saya tertarik dengan " +
+      product.name +
+      " " +
+      product.storage +
+      " (" +
+      product.status +
+      ", " +
+      jenisLabel(product.jenis) +
+      ") seharga " +
+      formatRupiah(product.price) +
+      ". Apakah masih tersedia?";
 
-  /* ---- Build a grouped card for one series ---- */
-  function buildGroupCard(seriesName, variants) {
-    // Collect unique storages & jenis options available in this series
-    const storages = [...new Set(variants.map((v) => v.storage))];
-    const jenisOptions = [...new Set(variants.map((v) => v.jenis))];
-
-    // Default selection: first available
-    let selectedStorage = storages[0];
-    let selectedJenis = jenisOptions[0];
-
-    // Storage order
-    const storageOrder = ["64GB", "128GB", "256GB", "512GB", "1TB"];
-    storages.sort((a, b) => storageOrder.indexOf(a) - storageOrder.indexOf(b));
-
-    // Jenis order
-    const jenisOrder = ["Inter", "Bea Cukai", "iBox"];
-    jenisOptions.sort((a, b) => jenisOrder.indexOf(a) - jenisOrder.indexOf(b));
-
-    // Helper: find variant matching current selection, with closest-match fallback
-    // Priority: exact match > same jenis (closest storage) > same storage (any jenis) > any variant in series
-    function findVariant() {
-      // 1) Exact match
-      const exact = variants.find(
-        (v) => v.storage === selectedStorage && v.jenis === selectedJenis,
-      );
-      if (exact) return { variant: exact, isExact: true };
-
-      // 2) Same jenis, closest storage
-      const sameJenis = variants.filter((v) => v.jenis === selectedJenis);
-      if (sameJenis.length) {
-        const targetIdx = storageOrder.indexOf(selectedStorage);
-        sameJenis.sort(
-          (a, b) =>
-            Math.abs(storageOrder.indexOf(a.storage) - targetIdx) -
-            Math.abs(storageOrder.indexOf(b.storage) - targetIdx),
-        );
-        return { variant: sameJenis[0], isExact: false };
-      }
-
-      // 3) Same storage, any jenis (prefer jenis order)
-      const sameStorage = variants.filter((v) => v.storage === selectedStorage);
-      if (sameStorage.length) {
-        sameStorage.sort(
-          (a, b) => jenisOrder.indexOf(a.jenis) - jenisOrder.indexOf(b.jenis),
-        );
-        return { variant: sameStorage[0], isExact: false };
-      }
-
-      // 4) Fallback: any variant in this series
-      return variants.length ? { variant: variants[0], isExact: false } : null;
-    }
-
-    // Build jenis badge CSS class
-    function jenisBadgeClass(jenis) {
-      if (jenis === "Inter") return "badge--jenis-inter";
-      if (jenis === "Bea Cukai") return "badge--jenis-beacukai";
-      return "badge--jenis-ibox";
-    }
-
-    // Build status badge class
-    function statusBadgeClass(status) {
-      return status === "New" ? "badge--status-new" : "badge--status-second";
-    }
-
-    // Get statuses available in this series
-    const statuses = [...new Set(variants.map((v) => v.status))];
-    const hasNew = statuses.includes("New");
-    const hasSecond = statuses.includes("Second");
-
-    /* ---- DOM ---- */
     const card = document.createElement("article");
     card.className = "product-card reveal is-visible";
-
-    function render() {
-      const result = findVariant();
-      const variant = result ? result.variant : null;
-      const isExact = result ? result.isExact : false;
-      const price = variant ? variant.price : null;
-      const status = variant ? variant.status : hasNew ? "New" : "Second";
-
-      // Build WA message
-      const message = variant
-        ? `Halo Gadget Ganteng, saya tertarik dengan ${seriesName} ${selectedStorage} (${status}, ${jenisLabel(selectedJenis)}) seharga ${formatRupiah(price)}${!isExact ? " (estimasi)" : ""}. Apakah masih tersedia?`
-        : `Halo Gadget Ganteng, saya tertarik dengan ${seriesName}. Apakah masih tersedia?`;
-
-      card.innerHTML = `
-        <div class="product-card__badges">
-          <span class="badge ${statusBadgeClass(status)}">${status}</span>
-        </div>
-        <h3 class="product-card__name">${seriesName}</h3>
-
-        <div class="card-selector-label">Jenis</div>
-        <div class="card-selector card-selector--jenis">
-          ${jenisOptions
-            .map(
-              (j) => `
-            <button
-              class="card-sel-btn ${j === selectedJenis ? "is-active" : ""} ${jenisBadgeClass(j)}"
-              data-jenis="${j}"
-              title="${jenisLabel(j)}"
-            >${jenisLabel(j)}</button>
-          `,
-            )
-            .join("")}
-        </div>
-
-        <div class="card-selector-label">Storage</div>
-        <div class="card-selector card-selector--storage">
-          ${storages
-            .map((s) => {
-              return `<button
-              class="card-sel-btn card-sel-btn--storage ${s === selectedStorage ? "is-active" : ""}"
-              data-storage="${s}"
-            >${s}</button>`;
-            })
-            .join("")}
-        </div>
-
-        <div class="product-card__price ${!variant ? "price--unavail" : ""}">
-          ${
-            variant
-              ? formatRupiah(price) +
-                (!isExact
-                  ? '<span style="display:block;font-size:0.62rem;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.04em;margin-top:2px;">Estimasi harga</span>'
-                  : "")
-              : '<span style="font-size:0.85rem;color:#666">Tidak tersedia</span>'
-          }
-        </div>
-
-        <a class="btn btn--primary btn--block ${!variant ? "btn--disabled" : ""}"
-           href="${variant ? waLink(message) : "#"}"
-           ${!variant ? 'aria-disabled="true" tabindex="-1"' : 'target="_blank" rel="noopener"'}>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.9-.4-1.9-1-2.7-1.9-.7-.7-1.2-1.5-1.5-2.1-.1-.2 0-.4.1-.5.2-.2.4-.5.6-.7.2-.2.2-.4.1-.6-.1-.2-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-.9 2.4.1 1.4 1 2.8 1.1 3 .1.2 1.6 2.6 4 3.6 2.3 1 2.3.7 2.7.6.4 0 1.3-.5 1.5-1 .2-.5.2-.9.1-1-.1-.1-.2-.2-.4-.2zM12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.5 5.2L2 22l4.9-1.5C8.4 21.5 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.1.9.9-3-.2-.3C3.7 14.8 3.2 13.4 3.2 12c0-4.8 3.9-8.7 8.7-8.7 4.8 0 8.7 3.9 8.7 8.7 0 4.8-3.9 8.7-8.6 8.7z"/></svg>
-          Chat WhatsApp
-        </a>
-      `;
-
-      // Bind selector events
-      card.querySelectorAll("[data-jenis]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          selectedJenis = btn.dataset.jenis;
-          render();
-        });
-      });
-
-      card.querySelectorAll("[data-storage]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          selectedStorage = btn.dataset.storage;
-          render();
-        });
-      });
-    }
-
-    render();
+    card.innerHTML = `
+      <div class="product-card__badges">
+        <span class="badge ${statusBadgeClass(product.status)}">${product.status}</span>
+        <span class="badge ${jenisBadgeClass(product.jenis)}">${jenisLabel(product.jenis)}</span>
+      </div>
+      <h3 class="product-card__name">${product.name}</h3>
+      <div class="product-card__specs">
+        <span class="spec">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+          ${product.storage}
+        </span>
+      </div>
+      <div class="product-card__price">${formatRupiah(product.price)}</div>
+      <a class="btn btn--primary btn--block" href="${waLink(message)}" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.9-.4-1.9-1-2.7-1.9-.7-.7-1.2-1.5-1.5-2.1-.1-.2 0-.4.1-.5.2-.2.4-.5.6-.7.2-.2.2-.4.1-.6-.1-.2-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.3.3-1 1-.9 2.4.1 1.4 1 2.8 1.1 3 .1.2 1.6 2.6 4 3.6 2.3 1 2.3.7 2.7.6.4 0 1.3-.5 1.5-1 .2-.5.2-.9.1-1-.1-.1-.2-.2-.4-.2zM12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.7 1.5 5.2L2 22l4.9-1.5C8.4 21.5 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3.1.9.9-3-.2-.3C3.7 14.8 3.2 13.4 3.2 12c0-4.8 3.9-8.7 8.7-8.7 4.8 0 8.7 3.9 8.7 8.7 0 4.8-3.9 8.7-8.6 8.7z"/></svg>
+        Chat WhatsApp
+      </a>
+    `;
     return card;
   }
 
-  /* ---- Active filters ---- */
-  const activeFilters = {
-    status: "all",
-    storage: "all",
-    jenis: "all",
-    search: "",
-  };
-
-  /* ---- Main render function ---- */
   function renderCatalog() {
     const term = activeFilters.search.trim().toLowerCase();
 
-    // Filter individual products first
     const filtered = PRODUCTS.filter((product) => {
-      const matchStatus =
-        activeFilters.status === "all" ||
-        product.status === activeFilters.status;
-      const matchStorage =
-        activeFilters.storage === "all" ||
-        product.storage === activeFilters.storage;
-      const matchJenis =
-        activeFilters.jenis === "all" || product.jenis === activeFilters.jenis;
+      const matchStatus = activeFilters.status === "all" || product.status === activeFilters.status;
+      const matchStorage = activeFilters.storage === "all" || product.storage === activeFilters.storage;
+      const matchJenis = activeFilters.jenis === "all" || product.jenis === activeFilters.jenis;
       const matchSearch = !term || product.name.toLowerCase().includes(term);
       return matchStatus && matchStorage && matchJenis && matchSearch;
     });
 
-    // Group by series
-    const grouped = groupProducts(filtered);
-
     catalogGrid.innerHTML = "";
-    grouped.forEach((variants, seriesName) => {
-      catalogGrid.appendChild(buildGroupCard(seriesName, variants));
-    });
+    filtered.forEach((product) => catalogGrid.appendChild(buildCard(product)));
 
-    catalogCount.textContent = `Menampilkan ${grouped.size} seri dari ${groupProducts(PRODUCTS).size} seri`;
-    catalogEmpty.classList.toggle("hidden", grouped.size !== 0);
-    catalogGrid.classList.toggle("hidden", grouped.size === 0);
+    catalogCount.textContent = `Menampilkan ${filtered.length} dari ${PRODUCTS.length} produk`;
+    catalogEmpty.classList.toggle("hidden", filtered.length !== 0);
+    catalogGrid.classList.toggle("hidden", filtered.length === 0);
   }
 
   filterGroups.forEach((group) => {
     const groupName = group.dataset.group;
     group.querySelectorAll(".filter-pill").forEach((pill) => {
       pill.addEventListener("click", () => {
-        group
-          .querySelectorAll(".filter-pill")
-          .forEach((p) => p.classList.remove("is-active"));
+        group.querySelectorAll(".filter-pill").forEach((p) => p.classList.remove("is-active"));
         pill.classList.add("is-active");
         activeFilters[groupName] = pill.dataset.value;
         renderCatalog();
@@ -446,4 +290,11 @@
   });
 
   renderCatalog();
+
+  // ===== EXPOSE: jembatan ke catalog-live.js (Firestore) =====
+  window.GG_renderCatalog = renderCatalog;
+  window.GG_setProducts = function (list) {
+    PRODUCTS = Array.isArray(list) ? list : [];
+    renderCatalog();
+  };
 })();
