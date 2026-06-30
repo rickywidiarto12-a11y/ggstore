@@ -52,6 +52,7 @@
         getDocs,
       } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
       const firebaseConfig = {
         apiKey: "AIzaSyAYLUuDDJK30BfHK92_8PVkFtUu2RCflWU",
         authDomain: "websiteggs-dfa23.firebaseapp.com",
@@ -61,7 +62,6 @@
         appId: "1:808307197800:web:3ae0ce7ec461604ca7f8dd",
         measurementId: "G-27QQ7TNK6H",
       };
-
       const firebaseApp = initializeApp(firebaseConfig);
       const db = getFirestore(firebaseApp);
 
