@@ -33,6 +33,7 @@ import {
   signOut,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+import { supabase, PRODUCT_IMAGE_BUCKET } from "./supabase-init.js";
 
 const ADMIN_EMAIL = "admin@gadgetganteng.id"; // <-- harus sama persis dengan user di Firebase Auth
 
@@ -68,6 +69,16 @@ function init() {
   const productList = document.getElementById("adminProductList");
   const toast = document.getElementById("adminToast");
   const loginSpinner = document.getElementById("adminLoginSpinner");
+  const imageInput = document.getElementById("fImageInput");
+  const imagePreviewImg = document.getElementById("adminImagePreviewImg");
+  const imagePreviewEmpty = document.getElementById("adminImagePreviewEmpty");
+  const imageRemoveBtn = document.getElementById("adminImageRemoveBtn");
+  const imageStatus = document.getElementById("adminImageStatus");
+
+  // Foto yang sedang aktif di form (URL final di Supabase Storage).
+  // null = tidak ada foto. Diisi lewat uploadProductImage() atau saat
+  // membuka form edit produk yang sudah punya imageUrl.
+  let currentImageUrl = null;
 
   // ===== HELPERS =====
   function fmtPrice(n) {
@@ -85,6 +96,48 @@ function init() {
     toast.className = "admin-toast show " + type;
     clearTimeout(toast._t);
     toast._t = setTimeout(() => (toast.className = "admin-toast"), 3000);
+  }
+
+  // ===== FOTO PRODUK (Supabase Storage) =====
+  function setImagePreview(url) {
+    currentImageUrl = url || null;
+    if (currentImageUrl) {
+      imagePreviewImg.src = currentImageUrl;
+      imagePreviewImg.style.display = "block";
+      imagePreviewEmpty.style.display = "none";
+      imageRemoveBtn.style.display = "inline-flex";
+    } else {
+      imagePreviewImg.src = "";
+      imagePreviewImg.style.display = "none";
+      imagePreviewEmpty.style.display = "block";
+      imageRemoveBtn.style.display = "none";
+    }
+  }
+
+  async function uploadProductImage(file) {
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+    imageStatus.textContent = "Mengunggah foto...";
+    imageInput.disabled = true;
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from(PRODUCT_IMAGE_BUCKET)
+        .upload(path, file, { cacheControl: "3600", upsert: false });
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(path);
+      setImagePreview(data.publicUrl);
+      imageStatus.textContent = "✅ Foto berhasil diunggah";
+      setTimeout(() => (imageStatus.textContent = ""), 2500);
+    } catch (err) {
+      console.error(err);
+      imageStatus.textContent = "";
+      showToast("⚠️ Gagal unggah foto: " + err.message, "error");
+    } finally {
+      imageInput.disabled = false;
+      imageInput.value = "";
+    }
   }
 
   // ===== PANELS =====
@@ -124,6 +177,7 @@ function init() {
         document.getElementById("fName").value = p.name;
         document.getElementById("fColor").value = p.color || "";
         document.getElementById("fNote").value = p.note || "";
+        setImagePreview(p.imageUrl || null);
         (p.variants || []).forEach((v) =>
           addVariantRow(v.status, v.jenis, v.storage, v.price)
         );
@@ -132,6 +186,7 @@ function init() {
       document.getElementById("fName").value = "";
       document.getElementById("fColor").value = "";
       document.getElementById("fNote").value = "";
+      setImagePreview(null);
       addVariantRow("New", "Inter", "128GB", "");
     }
     formOverlay.classList.add("show");
@@ -139,6 +194,7 @@ function init() {
   function closeForm() {
     formOverlay.classList.remove("show");
     editingProductId = null;
+    setImagePreview(null);
   }
 
   function addVariantRow(status = "New", jenis = "Inter", storage = "128GB", price = "") {
@@ -190,7 +246,10 @@ function init() {
 
       el.innerHTML = `
         <div class="admin-product-item__info">
-          <div class="admin-product-item__name">${p.name}${p.color ? ' <span style="color:#555;font-size:0.8rem;font-weight:500;text-transform:none;">· ' + p.color + "</span>" : ""}</div>
+          <div class="admin-product-item__name">
+            ${p.imageUrl ? `<img src="${p.imageUrl}" alt="" class="admin-product-item__thumb">` : ""}
+            ${p.name}${p.color ? ' <span style="color:#555;font-size:0.8rem;font-weight:500;text-transform:none;">· ' + p.color + "</span>" : ""}
+          </div>
           ${p.note ? `<div class="admin-product-item__meta"><span class="admin-meta-pill admin-meta-pill--note">${p.note}</span></div>` : ""}
           <table class="admin-variant-table">
             <thead><tr><th>Status</th><th>Jenis</th><th>Storage</th><th>Harga</th></tr></thead>
@@ -271,16 +330,18 @@ function init() {
       return;
     }
 
+    const imageUrl = currentImageUrl || null;
+
     formSave.disabled = true;
     try {
       if (editingProductId) {
         await updateDoc(doc(db, "products", editingProductId), {
-          name, color, note, variants, updatedAt: serverTimestamp()
+          name, color, note, variants, imageUrl, updatedAt: serverTimestamp()
         });
         showToast("✅ Produk berhasil diupdate!");
       } else {
         await addDoc(collection(db, "products"), {
-          name, color, note, variants, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+          name, color, note, variants, imageUrl, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
         });
         showToast("✅ Produk berhasil ditambah!");
       }
@@ -446,6 +507,11 @@ function init() {
       showToast("👋 Berhasil keluar");
     }
   });
+  imageInput.addEventListener("change", (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) uploadProductImage(file);
+  });
+  imageRemoveBtn.addEventListener("click", () => setImagePreview(null));
   addProductBtn.addEventListener("click", () => openForm(null));
   importBtn.addEventListener("click", importDefaults);
   formClose.addEventListener("click", closeForm);

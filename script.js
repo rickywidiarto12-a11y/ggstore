@@ -276,8 +276,17 @@
     const card = document.createElement("article");
     card.className = "product-card reveal is-visible";
     card.innerHTML = `
-      <div class="product-card__badges">
-        <span class="badge" data-role="status-badge"></span>
+      <div class="product-card__media">
+        ${
+          product.imageUrl
+            ? `<img class="product-card__image" src="${product.imageUrl}" alt="${fullName}" loading="lazy">`
+            : `<div class="product-card__image product-card__image--placeholder" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-4 4-3-3-6 6"/></svg>
+              </div>`
+        }
+        <div class="product-card__badges">
+          <span class="badge" data-role="status-badge"></span>
+        </div>
       </div>
       <h3 class="product-card__name">${fullName}</h3>
       ${product.note ? `<p class="product-card__note">${product.note}</p>` : ""}
